@@ -23,6 +23,8 @@ public class Intake {
       inactiveSpeed = 0.0;
     }
 
+    //TODO: for the deploy and intake methods, use position control to accurately set motors based on encoder position
+
     //deploy intake
     public void deploy(boolean spit, double deploymentMotorSpeed) {
       if (spit) {
@@ -40,5 +42,6 @@ public class Intake {
     public void stow() {
       verticalRollerMotor.set(inactiveSpeed);
       horizontalRollerMotor.set(inactiveSpeed);
+      deploymentMotor.set(inactiveSpeed);
     }
 }
