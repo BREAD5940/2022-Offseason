@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.GutPrototype;
+import frc.robot.subsystems.Intake;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,6 +24,7 @@ public class Robot extends TimedRobot {
   public static XboxController controller = new XboxController(0);
 
   GutPrototype gutPrototype = new GutPrototype();
+  Intake intake = new Intake();
 
   @Override
   public void robotInit() {}
@@ -64,12 +66,13 @@ public class Robot extends TimedRobot {
 
   // Controller Configuration
   public void configureTeleopControls() {
-    if (controller.getAButton()) {
-      gutPrototype.spin(0.8);
+    // Intake
+    if (controller.getRightTriggerAxis() >= 0.0) {
+      intake.deploy(false, controller.getRightTriggerAxis());
+    } else if (controller.getLeftTriggerAxis() >= 0.0) {
+      intake.deploy(true, -(controller.getLeftTriggerAxis()));
     } else {
-      gutPrototype.spin(0.0);
+      intake.stow();
     }
   }
-
-
 }
