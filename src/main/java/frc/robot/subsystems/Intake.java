@@ -52,7 +52,7 @@ public class Intake {
       deploymentPid.setOutputRange(-0.5, 0.5);
     }
 
-    // Requests intake to deploy and either spit or suck
+    // Requests intake to deploy and either spin inwards or outwards
     public void requestDeploy(boolean outtake) {
       if (outtake) {
         intakeState = IntakeState.DEPLOYED_ACTIVE_IN;
