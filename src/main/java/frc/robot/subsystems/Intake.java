@@ -107,7 +107,7 @@ public class Intake {
         spinRollers(false);
       } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_SPIT) {
         deploy();
-        spinRollers(false);
+        spinRollers(true);
       }
     }
 }
