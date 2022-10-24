@@ -52,7 +52,7 @@ public class Intake {
       deploymentPid.setOutputRange(-0.5, 0.5);
     }
 
-    // Requests intake to deploy and either spin inwards or outwards
+    // Public method to requests intake to deploy and either spin inwards or outwards
     public void requestDeploy(boolean outtake) {
       if (outtake) {
         intakeState = IntakeState.DEPLOYED_ACTIVE_IN;
@@ -61,12 +61,12 @@ public class Intake {
       }
     }
 
-    // Requests intake to stow
+    // Public method to request intake to stow
     public void requestStow() {
       intakeState = IntakeState.STOWED_INACTIVE;
     }
 
-    // Public method to find if the intake is at the given setpoint
+    // Private method to find if the intake is at the given setpoint
     private boolean intakeAtSetpoint(IntakeState setpoint) {
       double setpointType = setpoint == IntakeState.DEPLOYED_ACTIVE_IN || setpoint == IntakeState.DEPLOYED_ACTIVE_OUT ? INTAKE_DEPLOYED_SETPOINT : INTAKE_STOWED_SETPOINT;
       boolean atSetpoint = Math.abs(deploymentEncoder.getPosition() - setpointType) < INTAKE_SETPOINT_EPSILON;
