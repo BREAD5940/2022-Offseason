@@ -11,8 +11,8 @@ public class Intake {
     // State
     private enum IntakeState {
       STOWED_INACTIVE, // Intake is stowed and inactive
-      DEPLOYED_ACTIVE_SUCK, // Intake is deployed and actively sucking cargo in
-      DEPLOYED_ACTIVE_SPIT // Intake is deployed and is actively spitting cargo out
+      DEPLOYED_ACTIVE_IN, // Intake is deployed and actively intaking cargo
+      DEPLOYED_ACTIVE_OUT // Intake is deployed and is actively outtaking cargo
     }
 
     private IntakeState intakeState;
@@ -53,11 +53,11 @@ public class Intake {
     }
 
     // Requests intake to deploy and either spit or suck
-    public void requestDeploy(boolean spit) {
-      if (spit) {
-        intakeState = IntakeState.DEPLOYED_ACTIVE_SPIT;
+    public void requestDeploy(boolean outtake) {
+      if (outtake) {
+        intakeState = IntakeState.DEPLOYED_ACTIVE_IN;
       } else {
-        intakeState = IntakeState.DEPLOYED_ACTIVE_SUCK;
+        intakeState = IntakeState.DEPLOYED_ACTIVE_OUT;
       }
     }
 
@@ -68,7 +68,7 @@ public class Intake {
 
     // Public method to find if the intake is at the given setpoint
     private boolean intakeAtSetpoint(IntakeState setpoint) {
-      double setpointType = setpoint == IntakeState.DEPLOYED_ACTIVE_SUCK || setpoint == IntakeState.DEPLOYED_ACTIVE_SPIT ? INTAKE_DEPLOYED_SETPOINT : INTAKE_STOWED_SETPOINT;
+      double setpointType = setpoint == IntakeState.DEPLOYED_ACTIVE_IN || setpoint == IntakeState.DEPLOYED_ACTIVE_OUT ? INTAKE_DEPLOYED_SETPOINT : INTAKE_STOWED_SETPOINT;
       boolean atSetpoint = Math.abs(deploymentEncoder.getPosition() - setpointType) < INTAKE_SETPOINT_EPSILON;
 
       return atSetpoint;
@@ -76,7 +76,7 @@ public class Intake {
 
     // Private method to deploy intake to its deployment setpoint
     private void deploy() {
-      if (this.intakeAtSetpoint(IntakeState.DEPLOYED_ACTIVE_SUCK) || this.intakeAtSetpoint(IntakeState.DEPLOYED_ACTIVE_SPIT)) {
+      if (this.intakeAtSetpoint(IntakeState.DEPLOYED_ACTIVE_IN) || this.intakeAtSetpoint(IntakeState.DEPLOYED_ACTIVE_OUT)) {
         return;
       } else {
         deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
@@ -93,19 +93,19 @@ public class Intake {
     }
 
     // Private method to spin rollers
-    private void spinRollers(boolean spit) {
-      verticalRollerMotor.set(spit ? -0.3 : 1.0);
-      horizontalRollerMotor.set(spit ? -0.3 : 1.0);
+    private void spinRollers(boolean outtake) {
+      verticalRollerMotor.set(outtake ? -0.3 : 1.0);
+      horizontalRollerMotor.set(outtake ? -0.3 : 1.0);
     }
 
     // Public method to handle state / output functions
     public void periodic() {
       if (intakeState == IntakeState.STOWED_INACTIVE) {
         stow();
-      } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_SUCK) {
+      } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_IN) {
         deploy();
         spinRollers(false);
-      } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_SPIT) {
+      } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_OUT) {
         deploy();
         spinRollers(true);
       }
