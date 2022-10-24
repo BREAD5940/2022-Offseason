@@ -43,7 +43,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    configureTeleopControls();
+    periodicTeleopControls();
+    intake.periodic();
   }
 
   @Override
@@ -64,15 +65,14 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 
-  // Controller Configuration
-  public void configureTeleopControls() {
-    // Intake
-    if (controller.getRightTriggerAxis() >= 0.0) {
-      intake.deploy(false, controller.getRightTriggerAxis());
-    } else if (controller.getLeftTriggerAxis() >= 0.0) {
-      intake.deploy(true, -(controller.getLeftTriggerAxis()));
+  public void periodicTeleopControls() {
+    // Intake Controls
+    if (controller.getRightTriggerAxis() >= 0.1) {
+      intake.requestDeploy(false);
+    } else if (controller.getLeftTriggerAxis() >= 0.1) {
+      intake.requestDeploy(true);
     } else {
-      intake.stow();
+      intake.requestStow();
     }
   }
 }
