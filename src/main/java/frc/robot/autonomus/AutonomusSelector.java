@@ -1,7 +1,7 @@
 package frc.robot.autonomus;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.autonomus.routines.testRoutine;
 import frc.robot.subsystems.GutPrototype;
