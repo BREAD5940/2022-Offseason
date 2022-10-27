@@ -27,7 +27,9 @@ public class Robot extends TimedRobot {
   Intake intake = new Intake();
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    intake.requestHome();
+  }
 
   @Override
   public void robotPeriodic() {}
