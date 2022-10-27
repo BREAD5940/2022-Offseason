@@ -38,9 +38,9 @@ public class Intake {
     intakeState = IntakeState.HOMING;
 
     // Initializing motor controllers (configure CAN Ids later)
-    verticalRollerMotor = new CANSparkMax(0, MotorType.kBrushless);
-    horizontalRollerMotor = new CANSparkMax(0, MotorType.kBrushless);
-    deploymentMotor = new CANSparkMax(0, MotorType.kBrushless);
+    verticalRollerMotor = new CANSparkMax(INTAKE_VERTICAL_ROLLER_ID, MotorType.kBrushless);
+    horizontalRollerMotor = new CANSparkMax(INTAKE_HORIZONTAL_ROLLER_ID, MotorType.kBrushless);
+    deploymentMotor = new CANSparkMax(INTAKE_DEPLOYMENT_ID, MotorType.kBrushless);
 
     // Restore motor controller factory defaults
     verticalRollerMotor.restoreFactoryDefaults();
