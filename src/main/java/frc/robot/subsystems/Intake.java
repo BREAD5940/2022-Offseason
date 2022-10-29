@@ -50,8 +50,8 @@ public class Intake {
     // Initialize pid controller, deployment encoder, and limit switch
     deploymentPid = deploymentMotor.getPIDController();
     deploymentEncoder = deploymentMotor.getEncoder();
-    intakeLimit = new DigitalInput(0); //configure port later
-    
+    intakeLimit = new DigitalInput(0); // configure port later
+
     // Configure deployment encoder
     deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING * 360);
 
@@ -64,7 +64,7 @@ public class Intake {
   }
 
   // Public method to request intake to return to home position
-  public void requestHome() { 
+  public void requestHome() {
     intakeState = IntakeState.HOMING;
   }
 
@@ -87,7 +87,7 @@ public class Intake {
     deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
-  // Private method to stow intake to its stowing setpoint 
+  // Private method to stow intake to its stowing setpoint
   private void stow() {
     deploymentPid.setReference(INTAKE_STOWED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }

@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.GutPrototype;
 import frc.robot.subsystems.Intake;
 
 /**
@@ -23,7 +22,6 @@ public class Robot extends TimedRobot {
 
   public static XboxController controller = new XboxController(0);
 
-  GutPrototype gutPrototype = new GutPrototype();
   Intake intake = new Intake();
 
   @Override
