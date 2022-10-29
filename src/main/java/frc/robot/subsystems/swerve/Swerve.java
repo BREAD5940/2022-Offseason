@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import com.kauailabs.navx.frc.AHRS;
@@ -22,10 +23,10 @@ public class Swerve {
     private Translation2d BR_LOCATION = new Translation2d(.5, .6);
 
     // Modules
-    public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, 0, false, false);
-    public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, 0, false, false);
-    public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, 0, false, false);
-    public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, 0, false, false);
+    public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, Units.degreesToRadians(175.9), false, false);
+    public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, false);
+    public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, Units.degreesToRadians(10), false, false);
+    public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, Units.degreesToRadians(290.2), false, false);
     // Kinematics & Odometry
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
     private final SwerveDriveOdometry matchOdometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());

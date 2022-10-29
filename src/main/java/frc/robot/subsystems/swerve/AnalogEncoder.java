@@ -19,6 +19,7 @@ public class AnalogEncoder {
         if (angle < -Math.PI) angle = (2 * Math.PI) + angle;
         if (angle > Math.PI) angle = -(2 * Math.PI) + angle;
         return -angle;
+      //  return (((encoder.getVoltage() / RobotController.getVoltage5V()) * 2.0 * Math.PI));
     }
 
     public double getRaw() {

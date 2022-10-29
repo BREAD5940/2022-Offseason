@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GutPrototype;
+import frc.robot.subsystems.swerve.MK2SwerveModule;
 import frc.robot.subsystems.swerve.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,20 +25,27 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
 
+
   public static XboxController controller = new XboxController(0);
+  public final MK2SwerveModule fl = new MK2SwerveModule(12, 13, 1, Units.degreesToRadians(175.9), false, false);
+  public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, false);
+  public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, Units.degreesToRadians(10), false, false);
+  public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, Units.degreesToRadians(290.2), false, false);
 
   GutPrototype gutPrototype = new GutPrototype();
-  Swerve swerve = new Swerve();
+ // Swerve swerve = new Swerve();
   @Override
   public void robotInit() {}
 
   @Override
   public void robotPeriodic() {
-      SmartDashboard.putNumber("fl-raw-angle", Units.radiansToDegrees(swerve.fl.getModuleAngle()));
-      SmartDashboard.putNumber("fr-raw-angle",  Units.radiansToDegrees(swerve.fr.getModuleAngle()));
-      SmartDashboard.putNumber("bl-raw-angle",  Units.radiansToDegrees(swerve.bl.getModuleAngle()));
-      SmartDashboard.putNumber("br-raw-angle",  Units.radiansToDegrees(swerve.br.getModuleAngle()));
-  }
+   //fl.setState(new SwerveModuleState(2,Rotation2d.fromDegrees(0)));
+
+      // SmartDashboard.putNumber("fl-raw-angle", Units.radiansToDegrees(swerve.fl.getModuleAngle()));
+      // SmartDashboard.putNumber("fr-raw-angle",  Units.radiansToDegrees(swerve.fr.getModuleAngle()));
+      // SmartDashboard.putNumber("bl-raw-angle",  Units.radiansToDegrees(swerve.bl.getModuleAngle()));
+      // SmartDashboard.putNumber("br-raw-angle",  Units.radiansToDegrees(swerve.br.getModuleAngle()));
+   }
 
   @Override
   public void autonomousInit() {}
@@ -49,6 +59,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     configureTeleopControls();
+    fl.setState(new SwerveModuleState(2,Rotation2d.fromDegrees(0)));
   }
 
   @Override

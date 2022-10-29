@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -18,16 +19,19 @@ public class MK2SwerveModule {
     public final CANSparkMax turnMotor;
     public final RelativeEncoder driveEncoder;
     public final AnalogEncoder turnEncoder;
-    public final PIDController turnPID = new PIDController(0.5, 0.0, 0.0001);
+    public final PIDController turnPID = new PIDController(0.25, 0.0, 0);
     public final PIDController drivePID = new PIDController(0.01, 0.0, 0.0);
     public final SimpleMotorFeedforward driveFF = new SimpleMotorFeedforward(0.0, 2.82);
     public final boolean velEncoderReversed;
     public final boolean driveReversed;
 
-    public MK2SwerveModule(int driveMotorID, int steerMotorID, int encoderID, int encoderOffset, boolean velEncoderReversed, boolean driveReversed) {
+    public MK2SwerveModule(int driveMotorID, int steerMotorID, int encoderID, double encoderOffset, boolean velEncoderReversed, boolean driveReversed) {
         // Configure the steer motor, drive motor, and the encoders. 
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+        driveMotor.restoreFactoryDefaults();
+        driveMotor.setIdleMode(IdleMode.kCoast);
         turnMotor = new CANSparkMax(steerMotorID, MotorType.kBrushless);
+        turnMotor.restoreFactoryDefaults();
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = new AnalogEncoder(encoderID, encoderOffset);
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -50,11 +54,11 @@ public class MK2SwerveModule {
         // Set the desired state of the swerve module
         SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(turnEncoder.get()));
         double turnOutput = MathUtil.clamp(turnPID.calculate(turnEncoder.get(), state.angle.getRadians()), -0.5, 0.5);
-        turnMotor.set(turnOutput);
-            double driveFFOutput = driveFF.calculate(state.speedMetersPerSecond);
-            double drivePIDOutput = drivePID.calculate(getVelocity(), state.speedMetersPerSecond);
-            double driveOutput = MathUtil.clamp(driveFFOutput + drivePIDOutput, -12, 12);
-            driveMotor.setVoltage(driveReversed ? -driveOutput : driveOutput);
+       // turnMotor.set(turnOutput);
+        double driveFFOutput = driveFF.calculate(state.speedMetersPerSecond);
+        double drivePIDOutput = drivePID.calculate(getVelocity(), state.speedMetersPerSecond);
+        double driveOutput = MathUtil.clamp(driveFFOutput, -12, 12);
+        turnMotor.setVoltage(3);
     }
 
 

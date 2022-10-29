@@ -5,12 +5,12 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 public class GutPrototype {
 
-    // Hardware
-    CANSparkMax motor = new CANSparkMax(16, MotorType.kBrushless);
+ //   Hardware
+ //  CANSparkMax motor = new CANSparkMax(19, MotorType.kBrushless);
 
     // Methods
     public void spin(double percent) {
-        motor.set(percent);
+       // motor.set(percent);
     } 
 
 }
