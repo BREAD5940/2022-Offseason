@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GutPrototype;
-
+import frc.robot.subsystems.swerve.Swerve;
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -23,12 +25,17 @@ public class Robot extends TimedRobot {
   public static XboxController controller = new XboxController(0);
 
   GutPrototype gutPrototype = new GutPrototype();
-
+  Swerve swerve = new Swerve();
   @Override
   public void robotInit() {}
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+      SmartDashboard.putNumber("fl-raw-angle", Units.radiansToDegrees(swerve.fl.getModuleAngle()));
+      SmartDashboard.putNumber("fr-raw-angle",  Units.radiansToDegrees(swerve.fr.getModuleAngle()));
+      SmartDashboard.putNumber("bl-raw-angle",  Units.radiansToDegrees(swerve.bl.getModuleAngle()));
+      SmartDashboard.putNumber("br-raw-angle",  Units.radiansToDegrees(swerve.br.getModuleAngle()));
+  }
 
   @Override
   public void autonomousInit() {}

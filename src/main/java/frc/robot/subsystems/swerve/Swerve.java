@@ -21,11 +21,11 @@ public class Swerve {
     private Translation2d BL_LOCATION = new Translation2d(.5, .6);
     private Translation2d BR_LOCATION = new Translation2d(.5, .6);
 
-    // Modulessws
-    private final MK2SwerveModule fl = new MK2SwerveModule(0, 4, 0, 0, false, false);
-    private final MK2SwerveModule fr = new MK2SwerveModule(1, 5, 1, 0, false, false);
-    private final MK2SwerveModule bl = new MK2SwerveModule(2, 6, 2, 0, false, false);
-    private final MK2SwerveModule br = new MK2SwerveModule(3, 7, 3, 0, false, false);
+    // Modules
+    public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, 0, false, false);
+    public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, 0, false, false);
+    public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, 0, false, false);
+    public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, 0, false, false);
     // Kinematics & Odometry
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
     private final SwerveDriveOdometry matchOdometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
