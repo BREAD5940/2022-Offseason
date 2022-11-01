@@ -24,6 +24,10 @@ public class Shooter {
 
   }
 
+  public boolean canShoot() {
+    return (systemState == ShooterState.AT_SETPOINT);
+  }
+
   public void setVoltage() {
     motor1.setVoltage(2000);
   }

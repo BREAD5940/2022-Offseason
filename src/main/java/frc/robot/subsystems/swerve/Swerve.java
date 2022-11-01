@@ -17,7 +17,6 @@ import frc.robot.Robot;
 
 import com.fasterxml.jackson.core.sym.NameN;
 import com.kauailabs.navx.frc.AHRS;
-
 public class Swerve {
     
     // Gyro
@@ -44,15 +43,15 @@ public class Swerve {
     public static double ROBOT_MAX_SPEED = 4.29768;
 
     // State variables
-    private SwerveState systemState = SwerveState.AUTO_MODE;
+    private SwerveState systemState = SwerveState.Manual_MODE;
     private boolean requestTeleop = false;
-    private boolean requestAuto = false;
+    private boolean requestManual = false;
     private double lastTransitioned = 0.0;
 
     // Swerve state enum
     public enum SwerveState {
         TELEOP_MODE, 
-        AUTO_MODE
+        Manual_MODE
     }
 
 
@@ -141,11 +140,11 @@ public class Swerve {
 
     public void requestTeleop() {
         requestTeleop = true;
-        requestAuto = false;
+        requestManual = false;
     }
 
-    public void requestAuto() {
-        requestAuto = true;
+    public void request() {
+        requestManual = true;
         requestTeleop = false;
     }
 
@@ -153,7 +152,7 @@ public class Swerve {
     public void periodic() {
         SwerveState nextSystemState = systemState;
 
-        if (systemState == SwerveState.AUTO_MODE) {
+        if (systemState == SwerveState.Manual_MODE) {
 
             // Outputs
             
@@ -171,8 +170,8 @@ public class Swerve {
             double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
             setSpeeds(dx, dy, rot);
 
-            if (requestAuto) {
-                nextSystemState = SwerveState.AUTO_MODE;
+            if (requestManual) {
+                nextSystemState = SwerveState.Manual_MODE;
             }
         }
 

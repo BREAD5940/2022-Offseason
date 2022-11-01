@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.ColorSensor;
 import static frc.robot.Constants.Gut.*;
-
+import frc.robot.subsystems.Shooter;
 public class Gut {
     // State
     public enum GutStates {
@@ -32,6 +32,8 @@ public class Gut {
     // Motors
     private CANSparkMax closeMotor;
     private CANSparkMax farMotor;
+    private CANSparkMax gutVecteryBois;
+    private CANSparkMax gut;
 
     // Sensors
     public final ColorSensor colorSensor = new ColorSensor();
@@ -39,16 +41,18 @@ public class Gut {
     // Other variables
     private Alliance allianceColor;
     public double stateStartTime = 0.00;
-
+    public Shooter shooter;
     // Configure Gut on instantiation
-    public Gut() {
+    public Gut(Shooter shooter) {
+
         // Initial state
         gutState = GutStates.IDLE_NO_CARGO;
 
         // Initializing motor controllers
         closeMotor = new CANSparkMax(GUT_CLOSE_ID, MotorType.kBrushless);
         farMotor = new CANSparkMax(GUT_FAR_ID, MotorType.kBrushless);
-
+        gutVecteryBois = farMotor;
+        gut = closeMotor;
         allianceColor = DriverStation.getAlliance();
     }
 
@@ -81,17 +85,14 @@ public class Gut {
                 // states to -->
                 if (colorSensor.getColorFar() == allianceColor
                         && colorSensor.getColorClose() == Alliance.Invalid) { // intake no cargo
-
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 }
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-
                     gutState = GutStates.INTAKE_TWO_CARGO;
                 }
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
-
                     gutState = GutStates.OUTTAKE_ONE_CARGO;
                 }
 
@@ -128,7 +129,6 @@ public class Gut {
             gutVecteryBois.set(0.0); // fill in once defined later
 
             // State Transitions
-
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
@@ -147,7 +147,6 @@ public class Gut {
             gutVecteryBois.set(0.0); // fill in once defined later
 
             // State Transitions
-
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_TWO_CARGO;
             }
@@ -170,7 +169,6 @@ public class Gut {
             // Make sure shooter is idleing for the barf acttion
 
             // State Transitions
-
             if (!requestIntake) {
                 gutState = GutStates.IDLE_NO_CARGO;
             }
@@ -191,7 +189,6 @@ public class Gut {
             // Make sure the backmost roller is not running so that we dont spit
 
             // State Transitions
-
             if (!requestIntake) {
                 gutState = GutStates.IDLE_ONE_CARGO;
             }
@@ -219,7 +216,6 @@ public class Gut {
             // Make sure shooter is idleing for the shoot
 
             // State Transitions
-
             if (!requestIntake) {
                 gutState = GutStates.IDLE_TWO_CARGO;
             }
@@ -239,7 +235,7 @@ public class Gut {
             // shooter.setRPM(fender)
 
             // shooter subsystem should watch for this as a flag then spin up flywheel
-            if (shooter.getState() == shooterState.AT_SETPOINT && shooter.getState()) {
+            if (shooter.canShoot()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5);
