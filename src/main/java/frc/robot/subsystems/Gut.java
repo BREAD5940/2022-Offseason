@@ -1,11 +1,15 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.ColorSensor;
+import static frc.robot.Constants.Gut.*;
 
 public class Gut {
     // State
@@ -25,6 +29,10 @@ public class Gut {
     private boolean requestIntake = false;
     private boolean requestShoot = false;
 
+    // Motors
+    private CANSparkMax closeMotor;
+    private CANSparkMax farMotor;
+
     // Sensors
     public final ColorSensor colorSensor = new ColorSensor();
 
@@ -36,6 +44,10 @@ public class Gut {
     public Gut() {
         // Initial state
         gutState = GutStates.IDLE_NO_CARGO;
+
+        // Initializing motor controllers
+        closeMotor = new CANSparkMax(GUT_CLOSE_ID, MotorType.kBrushless);
+        farMotor = new CANSparkMax(GUT_FAR_ID, MotorType.kBrushless);
 
         allianceColor = DriverStation.getAlliance();
     }
@@ -50,10 +62,12 @@ public class Gut {
         gutState = GutStates.IDLE_NO_CARGO;
     }
 
+    public void spinRollers() {
+    }
+
     // Public method to handle state / output functions
     public void periodic() {
         if (gutState == GutStates.IDLE_NO_CARGO) {
-
             // State Outputs
             gut.set(0.0);
             gutVecteryBois.set(0.0); // fill in once defined later
@@ -225,13 +239,14 @@ public class Gut {
             // shooter.setRPM(fender)
 
             // shooter subsystem should watch for this as a flag then spin up flywheel
-            if (shooter.getState() == shooterState.AT_SETPOINT) {
+            if (shooter.getState() == shooterState.AT_SETPOINT && shooter.getState()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5);
                     gutVecteryBois.set(0.5); // fill in once defined later
+
+                    // shoot
                 }
-                // Make sure shooter is idleing for the barf acttion
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5); // only shoot one ball
@@ -249,7 +264,7 @@ public class Gut {
 
         }
 
-        // Spit out of the intake
+        // Outtake
         if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
 
             // State Outputs
