@@ -12,7 +12,7 @@ import static frc.robot.Constants.Intake.*;
 // Intake Subsystem
 public class Intake {
   // State
-  private enum IntakeState {
+  private enum IntakeStates {
     HOMING, // Homing state
     STOWED_INACTIVE, // Intake is stowed and inactive
     DEPLOYED_ACTIVE_IN, // Intake is deployed and actively intaking cargo
@@ -20,7 +20,7 @@ public class Intake {
   }
 
   // State
-  private IntakeState intakeState;
+  private IntakeStates intakeState;
 
   // Motors
   private CANSparkMax verticalRollerMotor;
@@ -32,10 +32,10 @@ public class Intake {
   private RelativeEncoder deploymentEncoder;
   private DigitalInput intakeLimit;
 
-  // Configuration upon instantiation
+  // Configuration Intake upon instantiation
   public Intake() {
     // Initial state
-    intakeState = IntakeState.HOMING;
+    intakeState = IntakeStates.HOMING;
 
     // Initializing motor controllers (configure CAN Ids later)
     verticalRollerMotor = new CANSparkMax(INTAKE_VERTICAL_ROLLER_ID, MotorType.kBrushless);
@@ -65,21 +65,21 @@ public class Intake {
 
   // Public method to request intake to return to home position
   public void requestHome() {
-    intakeState = IntakeState.HOMING;
+    intakeState = IntakeStates.HOMING;
   }
 
   // Public method to request intake to deploy and either spin inwards or outwards
   public void requestDeploy(boolean outtake) {
     if (outtake) {
-      intakeState = IntakeState.DEPLOYED_ACTIVE_OUT;
+      intakeState = IntakeStates.DEPLOYED_ACTIVE_OUT;
     } else {
-      intakeState = IntakeState.DEPLOYED_ACTIVE_IN;
+      intakeState = IntakeStates.DEPLOYED_ACTIVE_IN;
     }
   }
 
   // Public method to request intake to stow
   public void requestStow() {
-    intakeState = IntakeState.STOWED_INACTIVE;
+    intakeState = IntakeStates.STOWED_INACTIVE;
   }
 
   // Private method to deploy intake to its deployment setpoint
@@ -106,7 +106,7 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
-    if (intakeState == IntakeState.HOMING) {
+    if (intakeState == IntakeStates.HOMING) {
       // If limit switch is not triggered
       if (!intakeLimit.get()) {
         deploymentMotor.set(-0.5);
@@ -115,15 +115,15 @@ public class Intake {
         deploymentMotor.set(0.0);
         deploymentEncoder.setPosition(0.0);
 
-        intakeState = IntakeState.STOWED_INACTIVE;
+        intakeState = IntakeStates.STOWED_INACTIVE;
       }
-    } else if (intakeState == IntakeState.STOWED_INACTIVE) {
+    } else if (intakeState == IntakeStates.STOWED_INACTIVE) {
       stow();
       stopRollers();
-    } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_IN) {
+    } else if (intakeState == IntakeStates.DEPLOYED_ACTIVE_IN) {
       deploy();
       spinRollers(false);
-    } else if (intakeState == IntakeState.DEPLOYED_ACTIVE_OUT) {
+    } else if (intakeState == IntakeStates.DEPLOYED_ACTIVE_OUT) {
       deploy();
       spinRollers(true);
     }

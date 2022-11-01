@@ -1,48 +1,58 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.sensors.ColorSensor;
 
 public class Gut {
-
-    private boolean requestIntake = false;
-    private boolean requestShoot = false;
-    private boolean acceptAll = false;
-    // Color sensors will be in a seperate file
-    // Spit is auto infered accept all = false
-
-    private GutStates systemState = GutStates.IDLE_NO_CARGO;
-
-    public void requestShoot(boolean shoot) {
-        requestShoot = shoot;
-    }
-
-    public void requestReset(boolean reset) {
-        systemState = GutStates.IDLE_NO_CARGO;
-    }
-
-    public final ColorSensor colorSensor = new ColorSensor();
-
-    public double stateStartTime = 0.00;
-
+    // State
     public enum GutStates {
         IDLE_NO_CARGO,
         IDLE_ONE_CARGO,
         IDLE_TWO_CARGO,
-        INTAKING_NO_CARGO,
-        INTAKING_ONE_CARGO,
-        INTAKING_TWO_CARGO,
-        SPIT_ONE_CARGO,
+        INTAKE_NO_CARGO,
+        INTAKE_ONE_CARGO,
+        INTAKE_TWO_CARGO,
+        OUTTAKE_ONE_CARGO,
         SHOOT_CARGO
     }
 
-    public void periodic() {
-        GutStates nextSystemState = systemState; // this is different in C++? I would like to make system state change
-                                                 // to next system state
+    // State
+    private GutStates gutState;
+    private boolean requestIntake = false;
+    private boolean requestShoot = false;
 
-        if (systemState == GutStates.IDLE_NO_CARGO) {
+    // Sensors
+    public final ColorSensor colorSensor = new ColorSensor();
+
+    // Other variables
+    private Alliance allianceColor;
+    public double stateStartTime = 0.00;
+
+    // Configure Gut on instantiation
+    public Gut() {
+        // Initial state
+        gutState = GutStates.IDLE_NO_CARGO;
+
+        allianceColor = DriverStation.getAlliance();
+    }
+
+    // Public method to request shoot
+    public void requestShoot() {
+        requestShoot = true;
+    }
+
+    // Public method to request a state reset
+    public void requestReset(boolean reset) {
+        gutState = GutStates.IDLE_NO_CARGO;
+    }
+
+    // Public method to handle state / output functions
+    public void periodic() {
+        if (gutState == GutStates.IDLE_NO_CARGO) {
 
             // State Outputs
             gut.set(0.0);
@@ -55,20 +65,20 @@ public class Gut {
             if (requestIntake) {
                 // If we want to intake and we are given these inital conditions then change
                 // states to -->
-                if (colorSensor.getColorFar() == correctColor()
-                        && colorSensor.getColorClose() == CloseColorSensorStates.NONE) { // intake no cargo
+                if (colorSensor.getColorFar() == allianceColor
+                        && colorSensor.getColorClose() == Alliance.Invalid) { // intake no cargo
 
-                    nextSystemState = GutStates.INTAKING_ONE_CARGO;
+                    gutState = GutStates.INTAKE_ONE_CARGO;
                 }
 
-                if (colorSensor.getColorFar() == correctColor() && colorSensor.getColorClose() == correctColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
 
-                    nextSystemState = GutStates.INTAKING_TWO_CARGO;
+                    gutState = GutStates.INTAKE_TWO_CARGO;
                 }
 
-                if (colorSensor.getColorFar() == correctColor() && colorSensor.getColorClose() == wrongColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
 
-                    nextSystemState = GutStates.SPIT_ONE_CARGO;
+                    gutState = GutStates.OUTTAKE_ONE_CARGO;
                 }
 
             } else {
@@ -76,28 +86,28 @@ public class Gut {
                 // all is true
                 // I belive this is useful in autos and such
 
-                if (colorSensor.getColorFar() == correctColor()
-                        && colorSensor.getColorClose() == CloseColorSensorStates.NONE) {
+                if (colorSensor.getColorFar() == allianceColor
+                        && colorSensor.getColorClose() == Alliance.Invalid) {
 
-                    nextSystemState = GutStates.IDLE_ONE_CARGO;
+                    gutState = GutStates.IDLE_ONE_CARGO;
                 }
 
-                if (colorSensor.getColorFar() == correctColor() && colorSensor.getColorClose() == correctColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
 
-                    nextSystemState = GutStates.IDLE_TWO_CARGO;
+                    gutState = GutStates.IDLE_TWO_CARGO;
                 }
 
-                if (colorSensor.getColorFar() == correctColor() && colorSensor.getColorClose() == wrongColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
 
-                    nextSystemState = GutStates.SPIT_ONE_CARGO;
+                    gutState = GutStates.OUTTAKE_ONE_CARGO;
                 }
 
             }
 
         }
 
-        // If we have one correct ball
-        if (systemState == GutStates.IDLE_ONE_CARGO) {
+        // If we have one correct cargo
+        if (gutState == GutStates.IDLE_ONE_CARGO) {
 
             // State Outputs
             gut.set(0.0);
@@ -106,17 +116,17 @@ public class Gut {
             // State Transitions
 
             if (requestIntake && !requestShoot) {
-                nextSystemState = GutStates.INTAKING_ONE_CARGO;
+                gutState = GutStates.INTAKE_ONE_CARGO;
             }
 
             if (requestShoot) {
-                nextSystemState = GutStates.SHOOT_CARGO;
+                gutState = GutStates.SHOOT_CARGO;
             }
 
         }
 
-        // If we have two correct balls
-        if (systemState == GutStates.IDLE_TWO_CARGO) {
+        // If we have two correct cargo
+        if (gutState == GutStates.IDLE_TWO_CARGO) {
 
             // State Outputs
             gut.set(0.0);
@@ -125,19 +135,19 @@ public class Gut {
             // State Transitions
 
             if (requestIntake && !requestShoot) {
-                nextSystemState = GutStates.INTAKING_TWO_CARGO;
+                gutState = GutStates.INTAKE_TWO_CARGO;
             }
 
             if (requestShoot) {
-                nextSystemState = GutStates.SHOOT_CARGO;
+                gutState = GutStates.SHOOT_CARGO;
             }
 
         }
 
         // Intaking based states
 
-        // If we have no balls
-        if (systemState == GutStates.INTAKING_NO_CARGO) {
+        // If we have no cargo
+        if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
             gut.set(0.5);
@@ -148,17 +158,17 @@ public class Gut {
             // State Transitions
 
             if (!requestIntake) {
-                nextSystemState = GutStates.IDLE_NO_CARGO;
+                gutState = GutStates.IDLE_NO_CARGO;
             }
 
-            if (colorSensor.getColorFar() == correctColor()) {
-                nextSystemState = GutStates.INTAKING_ONE_CARGO;
+            if (colorSensor.getColorFar() == allianceColor) {
+                gutState = GutStates.INTAKE_ONE_CARGO;
             }
 
         }
 
         // If we have one ball and intaking
-        if (systemState == GutStates.INTAKING_ONE_CARGO) {
+        if (gutState == GutStates.INTAKE_ONE_CARGO) {
 
             // State Outputs
             gut.set(0.5); // only close to intake (might be none)
@@ -169,24 +179,24 @@ public class Gut {
             // State Transitions
 
             if (!requestIntake) {
-                nextSystemState = GutStates.IDLE_ONE_CARGO;
+                gutState = GutStates.IDLE_ONE_CARGO;
             }
 
-            if (colorSensor.getColorClose() == correctColor()) {
-                nextSystemState = GutStates.INTAKING_TWO_CARGO;
+            if (colorSensor.getColorClose() == allianceColor) {
+                gutState = GutStates.INTAKE_TWO_CARGO;
             }
 
             if (requestShoot) {
-                nextSystemState = GutStates.SHOOT_CARGO;
+                gutState = GutStates.SHOOT_CARGO;
             }
 
-            if (colorSensor.getColorClose() == wrongColor()) {
-                nextSystemState = GutStates.SPIT_ONE_CARGO;
+            if (colorSensor.getColorClose() != allianceColor) {
+                gutState = GutStates.OUTTAKE_ONE_CARGO;
             }
 
         }
 
-        if (systemState == GutStates.INTAKING_TWO_CARGO) {
+        if (gutState == GutStates.INTAKE_TWO_CARGO) {
 
             // State Outputs
             gut.set(0.0);
@@ -197,18 +207,18 @@ public class Gut {
             // State Transitions
 
             if (!requestIntake) {
-                nextSystemState = GutStates.IDLE_TWO_CARGO;
+                gutState = GutStates.IDLE_TWO_CARGO;
             }
 
             if (requestShoot) {
-                nextSystemState = GutStates.SHOOT_CARGO;
+                gutState = GutStates.SHOOT_CARGO;
             }
 
         }
 
         // Special Cases, Shooting,
 
-        if (systemState == GutStates.SHOOT_CARGO) {
+        if (gutState == GutStates.SHOOT_CARGO) {
 
             // State Outputs
 
@@ -217,13 +227,13 @@ public class Gut {
             // shooter subsystem should watch for this as a flag then spin up flywheel
             if (shooter.getState() == shooterState.AT_SETPOINT) {
 
-                if (colorSensor.getColorFar() != wrongColor() && colorSensor.getColorClose() != wrongColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5);
                     gutVecteryBois.set(0.5); // fill in once defined later
                 }
                 // Make sure shooter is idleing for the barf acttion
 
-                if (colorSensor.getColorFar() != wrongColor() && colorSensor.getColorClose() == wrongColor()) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5); // only shoot one ball
                 }
 
@@ -233,14 +243,14 @@ public class Gut {
             // State Transitions
 
             if (!requestShoot) {
-                nextSystemState = GutStates.IDLE_NO_CARGO;
+                gutState = GutStates.IDLE_NO_CARGO;
             } // I can do this because of the logic in IDLE_NO_CARGO
               // it will auto sence what state it is acctually in
 
         }
 
         // Spit out of the intake
-        if (systemState == GutStates.SPIT_ONE_CARGO) {
+        if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
 
             // State Outputs
             gut.set(0.0);
@@ -251,7 +261,7 @@ public class Gut {
             // State Transitions
 
             if (requestShoot) {
-                nextSystemState = GutStates.SHOOT_CARGO;
+                gutState = GutStates.SHOOT_CARGO;
             }
 
             final double now = Timer.getMatchTime();
@@ -259,19 +269,12 @@ public class Gut {
             // poor formatting, wait for 0.7 seconds
             if ((RobotController.getFPGATime() / 1.0E6) - stateStartTime > 2) {
                 if (requestIntake) {
-                    nextSystemState = GutStates.INTAKING_ONE_CARGO;
+                    gutState = GutStates.INTAKE_ONE_CARGO;
                 } else {
-                    nextSystemState = GutStates.IDLE_ONE_CARGO;
+                    gutState = GutStates.IDLE_ONE_CARGO;
                 }
             }
 
         }
-
-        if (nextSystemState != systemState) {
-            systemState = nextSystemState;
-            stateStartTime = RobotController.getFPGATime() / 1.0E6;
-        }
-
     }
-
 }

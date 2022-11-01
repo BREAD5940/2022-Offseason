@@ -1,9 +1,9 @@
 package frc.robot.sensors;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class ColorSensor {
-
     public int far_r = 0;
     public int far_b = 0;
     public int close_r = 0;
@@ -13,22 +13,10 @@ public class ColorSensor {
 
     public static int colorRatio = 4; // Ratio for color decision
 
-    private CloseColorSensorStates closeColor = CloseColorSensorStates.NONE;
-    private FarColorSensorStates farColor = FarColorSensorStates.NONE;
+    private Alliance closeColor = Alliance.Invalid;
+    private Alliance farColor = Alliance.Invalid;
 
     SerialPort serialMXP = new SerialPort(9600, SerialPort.Port.kMXP);
-
-    public enum FarColorSensorStates {
-        NONE,
-        RED,
-        BLUE
-    }
-
-    public enum CloseColorSensorStates {
-        NONE,
-        RED,
-        BLUE
-    }
 
     public void periodic() {
 
@@ -46,29 +34,29 @@ public class ColorSensor {
 
         // if there is colorRatio times red then blue it is probably red
         if (close_r / close_b > colorRatio) {
-            closeColor = CloseColorSensorStates.RED;
+            closeColor = Alliance.Red;
         }
 
         if (close_b / close_r > colorRatio) {
-            closeColor = CloseColorSensorStates.BLUE;
+            closeColor = Alliance.Red;
         }
 
         if (far_r / far_b > colorRatio) {
-            farColor = FarColorSensorStates.RED;
+            farColor = Alliance.Red;
         }
 
         if (far_b / far_r > colorRatio) {
-            farColor = FarColorSensorStates.BLUE;
+            farColor = Alliance.Blue;
         }
 
     }
 
     // Methods to call in other files to read the colors here
-    public CloseColorSensorStates getColorClose() {
+    public Alliance getColorClose() {
         return closeColor;
     }
 
-    public FarColorSensorStates getColorFar() {
+    public Alliance getColorFar() {
         return farColor;
     }
 
