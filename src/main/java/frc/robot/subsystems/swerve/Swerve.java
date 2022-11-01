@@ -15,18 +15,18 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Swerve {
+    
     // Gyro
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    public  Translation2d FL_LOCATION = new Translation2d(.5, .6);
-    private Translation2d FR_LOCATION = new Translation2d(.5, .6);
-    private Translation2d BL_LOCATION = new Translation2d(.5, .6);
-    private Translation2d BR_LOCATION = new Translation2d(.5, .6);
+    public  Translation2d FL_LOCATION = new Translation2d(Units.inchesToMeters(20.5), Units.inchesToMeters(20.5));
+    private Translation2d FR_LOCATION = new Translation2d(Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
+    private Translation2d BL_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), Units.inchesToMeters(20.5));
+    private Translation2d BR_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
 
-    // Modules
-    public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, Units.degreesToRadians(175.9), false, false);
-    public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, false);
+    public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, Units.degreesToRadians(300.2), false, false);
+    public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, true);
     public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, Units.degreesToRadians(10), false, false);
-    public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, Units.degreesToRadians(290.2), false, false);
+    public final MK2SwerveModule br = new MK2SwerveModule(17, 16, 2, Units.degreesToRadians(290.2), false, true);
     // Kinematics & Odometry
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(FL_LOCATION, FR_LOCATION, BL_LOCATION, BR_LOCATION);
     private final SwerveDriveOdometry matchOdometry = new SwerveDriveOdometry(kinematics, gyro.getRotation2d());
@@ -37,7 +37,7 @@ public class Swerve {
 
     // State variables
     private boolean atVisionHeadingSetpoint = false;
-    private double ROBOT_MAX_SPEED = 4.29768;
+    public static double ROBOT_MAX_SPEED = 4.29768;
 
     /* Create your kinematics object */
 
@@ -48,17 +48,18 @@ public class Swerve {
 
     public void setSpeeds(double xSpeed, double ySpeed, double rot) {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
-            xSpeed, ySpeed, rot, pose.getRotation()));
-            SwerveDriveKinematics.desaturateWheelSpeeds(states, ROBOT_MAX_SPEED);
-            fl.setState(states[0]);
-            fr.setState(states[1]);
-            bl.setState(states[2]);
-            br.setState(states[3]);
+            xSpeed, ySpeed, rot, pose.getRotation())
+        );
+        SwerveDriveKinematics.desaturateWheelSpeeds(states, ROBOT_MAX_SPEED);
+        fl.setState(states[0]);
+        fr.setState(states[1]);
+        bl.setState(states[2]);
+        br.setState(states[3]);
     }
 
     /* Helper methods */
-       // Returns the raw gyro angle; is negated to be counterclockwise positive
-       public double getRawGyro() {
+    // Returns the raw gyro angle; is negated to be counterclockwise positive
+    public double getRawGyro() {
         return -gyro.getAngle();
     }
 
