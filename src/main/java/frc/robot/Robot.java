@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GutPrototype;
 import frc.robot.subsystems.swerve.MK2SwerveModule;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.Intake;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -32,9 +34,12 @@ public class Robot extends TimedRobot {
 
   GutPrototype gutPrototype = new GutPrototype();
   Swerve swerve = new Swerve();
+  Intake intake = new Intake();
 
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    intake.requestHome();
+  }
 
   @Override
   public void robotPeriodic() {
@@ -57,7 +62,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    configureTeleopControls();
+    periodicTeleopControls();
+    intake.periodic();
   }
 
   @Override
@@ -78,20 +84,20 @@ public class Robot extends TimedRobot {
   @Override
   public void simulationPeriodic() {}
 
-  // Controller Configuration
-  public void configureTeleopControls() {
+  public void periodicTeleopControls() {
     swerve.updateOdometry();
-
-    if (controller.getAButton()) {
-      gutPrototype.spin(0.8);
+    
+    // Intake Controls
+    if (controller.getRightTriggerAxis() >= 0.1) {
+      intake.requestDeploy(false);
+    } else if (controller.getLeftTriggerAxis() >= 0.1) {
+      intake.requestDeploy(true);
     } else {
-      gutPrototype.spin(0.0);
+      intake.requestStow();
     }
 
     if (controller.getRawButton(Button.kStart.value)) {
       swerve.reset(new Pose2d());
     }
   }
-
-
 }
