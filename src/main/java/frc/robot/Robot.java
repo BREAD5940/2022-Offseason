@@ -82,14 +82,6 @@ public class Robot extends TimedRobot {
   public void configureTeleopControls() {
     swerve.updateOdometry();
 
-    double x = controller.getRightY();
-    double y = controller.getRightX();
-    double omega = controller.getLeftX();
-    double dx = Math.abs(x) > 0.05 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
-    double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
-    double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
-    swerve.setSpeeds(dx, dy, rot);
-
     if (controller.getAButton()) {
       gutPrototype.spin(0.8);
     } else {

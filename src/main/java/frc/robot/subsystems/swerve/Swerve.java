@@ -10,8 +10,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.Robot;
+
+import com.fasterxml.jackson.core.sym.NameN;
 import com.kauailabs.navx.frc.AHRS;
 
 public class Swerve {
@@ -39,7 +43,18 @@ public class Swerve {
     private boolean atVisionHeadingSetpoint = false;
     public static double ROBOT_MAX_SPEED = 4.29768;
 
-    /* Create your kinematics object */
+    // State variables
+    private SwerveState systemState = SwerveState.AUTO_MODE;
+    private boolean requestTeleop = false;
+    private boolean requestAuto = false;
+    private double lastTransitioned = 0.0;
+
+    // Swerve state enum
+    public enum SwerveState {
+        TELEOP_MODE, 
+        AUTO_MODE
+    }
+
 
     public Swerve() {
         // Might want to do some config in the constructor
@@ -123,4 +138,47 @@ public class Swerve {
             br.getState()
         );
     }
+
+    public void requestTeleop() {
+        requestTeleop = true;
+        requestAuto = false;
+    }
+
+    public void requestAuto() {
+        requestAuto = true;
+        requestTeleop = false;
+    }
+
+    // periodic method should be called every 20ms    
+    public void periodic() {
+        SwerveState nextSystemState = systemState;
+
+        if (systemState == SwerveState.AUTO_MODE) {
+
+            // Outputs
+            
+            if (requestTeleop) {
+                nextSystemState = SwerveState.TELEOP_MODE;
+            }
+        } else if (systemState == SwerveState.TELEOP_MODE) {
+
+            //Outputs 
+            double x = Robot.controller.getRightY();
+            double y = Robot.controller.getRightX();
+            double omega = Robot.controller.getLeftX();
+            double dx = Math.abs(x) > 0.05 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
+            double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
+            double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
+            setSpeeds(dx, dy, rot);
+
+            if (requestAuto) {
+                nextSystemState = SwerveState.AUTO_MODE;
+            }
+        }
+
+        if (nextSystemState != systemState) {
+            lastTransitioned = RobotController.getFPGATime()/1.0E6;
+            systemState = nextSystemState;
+        }
+    }   
 }
