@@ -4,9 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.GutPrototype;
+import frc.robot.subsystems.swerve.MK2SwerveModule;
+import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.Intake;
 
 /**
@@ -21,9 +29,11 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
 
+
   public static XboxController controller = new XboxController(0);
 
   GutPrototype gutPrototype = new GutPrototype();
+  Swerve swerve = new Swerve();
   Intake intake = new Intake();
 
   @Override
@@ -32,7 +42,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("Gyro Angle", swerve.getRawGyro());
+    SmartDashboard.putNumber("FL-angle", swerve.fl.getModuleAngle());
+    SmartDashboard.putNumber("FR-angle", swerve.fr.getModuleAngle());
+    SmartDashboard.putNumber("BL-angle", swerve.bl.getModuleAngle());
+    SmartDashboard.putNumber("BR-angle", swerve.br.getModuleAngle());
+
+  }
 
   @Override
   public void autonomousInit() {}
@@ -68,6 +85,8 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {}
 
   public void periodicTeleopControls() {
+    swerve.updateOdometry();
+    
     // Intake Controls
     if (controller.getRightTriggerAxis() >= 0.1) {
       intake.requestDeploy(false);
@@ -75,6 +94,10 @@ public class Robot extends TimedRobot {
       intake.requestDeploy(true);
     } else {
       intake.requestStow();
+    }
+
+    if (controller.getRawButton(Button.kStart.value)) {
+      swerve.reset(new Pose2d());
     }
   }
 }
