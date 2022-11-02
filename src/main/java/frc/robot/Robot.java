@@ -2,15 +2,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.GutPrototype;
 
 
 public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   public static XboxController controller = new XboxController(0);
-
-  GutPrototype gutPrototype = new GutPrototype();
+  private Object auto;
 
   @Override
   public void robotInit() {
@@ -18,24 +16,23 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
+  public void robotPeriodic() {}
 
   @Override
   public void autonomousInit() {
+    auto = m_robotContainer.getAutonomous();
   }
     
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    //auto.periodic();
+  }
 
   @Override
-  public void teleopInit() {
-  }
+  public void teleopInit() {}
     
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void disabledInit() {}
@@ -56,8 +53,7 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {}
 
   // Controller Configuration
-  public void configureTeleopControls() {
-  }
+  public void configureTeleopControls() {}
 
 
 }

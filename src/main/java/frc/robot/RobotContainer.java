@@ -30,7 +30,7 @@ public class RobotContainer {
   private void configureButtonBindings() {}
 
 
-  public Object getAutonomousCommand() {
+  public Object getAutonomous() {
     return autonomusSelector.get();
   }
 }
