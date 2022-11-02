@@ -143,9 +143,10 @@ public class Swerve {
         requestManual = false;
     }
 
-    public void request() {
+    public void requestManual(double xSpeed, double ySpeed, double rot) {
         requestManual = true;
         requestTeleop = false;
+        setSpeeds(xSpeed, ySpeed, rot);
     }
 
     // periodic method should be called every 20ms    
