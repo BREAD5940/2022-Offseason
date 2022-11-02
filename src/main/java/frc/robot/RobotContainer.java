@@ -13,20 +13,19 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.autonomus.AutonomusSelector;
 
 public class RobotContainer {
-  public static Swerve swerve = new Swerve();
-  public static Shooter shooter = new Shooter();
-  public static Gut gut = new Gut(shooter);
-  public static Intake intake = new Intake();
+  public Swerve swerve = new Swerve();
+  public Shooter shooter = new Shooter();
+  public Gut gut = new Gut(shooter);
+  public Intake intake = new Intake();
 
 
-  public static AutonomusSelector autonomusSelector = new AutonomusSelector(swerve, shooter, intake, gut);
+  public AutonomusSelector autonomusSelector = new AutonomusSelector(swerve, shooter, intake, gut);
 
 
   public RobotContainer() {
     configureButtonBindings();
   }
 
-  
   private void configureButtonBindings() {}
 
 

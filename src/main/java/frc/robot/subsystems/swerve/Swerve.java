@@ -25,7 +25,7 @@ public class Swerve {
     private Translation2d FR_LOCATION = new Translation2d(Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
     private Translation2d BL_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), Units.inchesToMeters(20.5));
     private Translation2d BR_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
-
+    
     public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, Units.degreesToRadians(300.2), false, false);
     public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, true);
     public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, Units.degreesToRadians(10), false, false);
@@ -41,7 +41,7 @@ public class Swerve {
     // State variables
     private boolean atVisionHeadingSetpoint = false;
     public static double ROBOT_MAX_SPEED = 4.29768;
-
+    
     // State variables
     private SwerveState systemState = SwerveState.Manual_MODE;
     private boolean requestTeleop = false;
@@ -53,7 +53,6 @@ public class Swerve {
         TELEOP_MODE, 
         Manual_MODE
     }
-
 
     public Swerve() {
         // Might want to do some config in the constructor
@@ -81,13 +80,13 @@ public class Swerve {
     public Rotation2d getGyro() {
         return gyro.getRotation2d();
     }
-    
+
     // Resets match odometry
     public void reset(Pose2d newPose) {
         matchOdometry.resetPosition(newPose, gyro.getRotation2d());
         pose = matchOdometry.getPoseMeters();
     }
-    
+
     // Updates match odometry
     public void updateOdometry() {
         pose = matchOdometry.update(
@@ -105,6 +104,7 @@ public class Swerve {
     public Pose2d getPose() {
         return pose;
     }
+
     // Sets whether or not the drivetrain is at its vision reference
     public void setAtVisionHeadingSetpoint(boolean set) {
         atVisionHeadingSetpoint = set;
@@ -156,7 +156,6 @@ public class Swerve {
         if (systemState == SwerveState.Manual_MODE) {
 
             // Outputs
-            
             if (requestTeleop) {
                 nextSystemState = SwerveState.TELEOP_MODE;
             }

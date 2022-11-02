@@ -29,10 +29,14 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    m_robotContainer.swerve.requestTeleop();
+  }
     
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.swerve.periodic();
+  }
 
   @Override
   public void disabledInit() {}

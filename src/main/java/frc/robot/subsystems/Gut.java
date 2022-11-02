@@ -232,7 +232,7 @@ public class Gut {
 
             // State Outputs
 
-            // shooter.setRPM(fender)
+            shooter.requestShoot(0.0); //fender rpm
 
             // shooter subsystem should watch for this as a flag then spin up flywheel
             if (shooter.canShoot()) {
