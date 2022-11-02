@@ -1,6 +1,7 @@
 package frc.robot.autonomus;
 
 import frc.robot.autonomus.routines.testRoutine;
+import frc.robot.autonomus.routines.twoBallAuto;
 
 // import Subsystems
 import frc.robot.subsystems.swerve.Swerve;
@@ -10,14 +11,15 @@ import frc.robot.subsystems.Shooter;
 
 
 public class AutonomusSelector {
-    private testRoutine autonomusSelector;
+    private twoBallAuto autonomusSelector;
 
 
     public AutonomusSelector(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
-        autonomusSelector = new testRoutine(swerve, shooter, intake, gut);
+        autonomusSelector = new twoBallAuto(swerve, shooter, intake, gut);
     }
     
-    public testRoutine get() {
+
+    public twoBallAuto get(){
         return autonomusSelector;
     }
 }
