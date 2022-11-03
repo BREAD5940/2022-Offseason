@@ -35,18 +35,18 @@ public class ColorSensor {
         // if there is colorRatio times red then blue it is probably red
         if (close_r / close_b > colorRatio) {
             closeColor = Alliance.Red;
-        }
-
-        if (close_b / close_r > colorRatio) {
+        } else if (close_b / close_r > colorRatio) {
             closeColor = Alliance.Red;
+        } else {
+            closeColor = Alliance.Invalid;
         }
 
         if (far_r / far_b > colorRatio) {
             farColor = Alliance.Red;
-        }
-
-        if (far_b / far_r > colorRatio) {
+        } else if (far_b / far_r > colorRatio) {
             farColor = Alliance.Blue;
+        } else {
+            farColor = Alliance.Invalid;
         }
 
     }
