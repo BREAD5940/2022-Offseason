@@ -248,7 +248,7 @@ public class Gut {
                     // shoot
                 }
 
-                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
                     gut.set(0.5); // only shoot one ball
                 }
 
