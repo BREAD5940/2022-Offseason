@@ -14,9 +14,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
+import edu.wpi.first.wpilibj.XboxController.Button;
 
 import com.fasterxml.jackson.core.sym.NameN;
 import com.kauailabs.navx.frc.AHRS;
+
 public class Swerve {
     
     // Gyro
@@ -25,7 +27,7 @@ public class Swerve {
     private Translation2d FR_LOCATION = new Translation2d(Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
     private Translation2d BL_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), Units.inchesToMeters(20.5));
     private Translation2d BR_LOCATION = new Translation2d(-Units.inchesToMeters(20.5), -Units.inchesToMeters(20.5));
-    
+
     public final MK2SwerveModule fl = new MK2SwerveModule(13, 12, 1, Units.degreesToRadians(300.2), false, false);
     public final MK2SwerveModule fr = new MK2SwerveModule(11, 10, 3, Units.degreesToRadians(111.3), false, true);
     public final MK2SwerveModule bl = new MK2SwerveModule(15, 14, 0, Units.degreesToRadians(10), false, false);
@@ -160,10 +162,15 @@ public class Swerve {
                 nextSystemState = SwerveState.TELEOP_MODE;
             }
         } else if (systemState == SwerveState.TELEOP_MODE) {
-
-            //Outputs 
+            
+            // Swerve Controls
+            if (Robot.controller.getRawButton(Button.kStart.value)) {
+                reset(new Pose2d());
+            }
             double x = Robot.controller.getRightY();
             double y = Robot.controller.getRightX();
+
+            //Outputs 
             double omega = Robot.controller.getLeftX();
             double dx = Math.abs(x) > 0.05 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
             double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;

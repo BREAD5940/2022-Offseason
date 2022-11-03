@@ -30,7 +30,7 @@ public class Shooter {
   public void gutInput(Gut gut) {}
 
   public boolean canShoot() {
-    return (systemState == ShooterState.AT_SETPOINT);
+    return (systemState == ShooterState.AT_SETPOINT && atSetPoint());
   }
 
   public void setVoltage() {
@@ -86,7 +86,7 @@ public class Shooter {
     }
     if (systemState == ShooterState.IDLE) {
       setFlywheelRPM(0.0); // idle rpm
-    } else if (! atSetPoint()) {
+    } else if (! atSetPoint()) { // this is so if the rpm is close then not close it still works
       systemState = ShooterState.APPROACHING_SETPOINT;
       setFlywheelRPM(setpoint);
     } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
@@ -110,7 +110,7 @@ public class Shooter {
   public enum ShooterState {
     IDLE, 
     APPROACHING_SETPOINT, 
-    STABALIZING,
+    STABALIZING, // 0.25 seconds are waited stablizing before we shoot
     AT_SETPOINT
   }
 }

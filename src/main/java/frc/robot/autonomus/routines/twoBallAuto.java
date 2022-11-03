@@ -13,8 +13,7 @@ public class twoBallAuto {
   public Gut gut;
   public double timeStarted = getTime();
 
-  public twoBallAuto(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
-  }
+  public twoBallAuto(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {}
 
   private double getTime() {
     return RobotController.getFPGATime() / 1.0E6;

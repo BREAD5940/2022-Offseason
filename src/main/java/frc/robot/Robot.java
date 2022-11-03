@@ -78,10 +78,5 @@ public class Robot extends TimedRobot {
     } else {
       m_robotContainer.intake.requestStow();
     }
-
-    // Swerve Controls
-    if (controller.getRawButton(Button.kStart.value)) {
-      m_robotContainer.swerve.reset(new Pose2d());
-    }
   }
 }
