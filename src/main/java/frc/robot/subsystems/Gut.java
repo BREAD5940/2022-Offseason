@@ -69,6 +69,12 @@ public class Gut {
     public void spinRollers() {
     }
 
+    // get time S
+    private double getTime() {
+        return RobotController.getFPGATime()/1.0E6;
+    }
+
+
     // Public method to handle state / output functions
     public void periodic() {
         if (gutState == GutStates.IDLE_NO_CARGO) {
@@ -232,8 +238,6 @@ public class Gut {
 
             // State Outputs
 
-            shooter.requestShoot(0.0); //fender rpm
-
             // shooter subsystem should watch for this as a flag then spin up flywheel
             if (shooter.canShoot()) {
 
@@ -247,8 +251,6 @@ public class Gut {
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gut.set(0.5); // only shoot one ball
                 }
-
-                //
 
             }
             // State Transitions
@@ -278,7 +280,7 @@ public class Gut {
             final double now = Timer.getMatchTime();
 
             // poor formatting, wait for 0.7 seconds
-            if ((RobotController.getFPGATime() / 1.0E6) - stateStartTime > 2) {
+            if (getTime() - stateStartTime > 2) {
                 if (requestIntake) {
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 } else {

@@ -18,11 +18,11 @@ public class RobotContainer {
   public Gut gut = new Gut(shooter);
   public Intake intake = new Intake();
 
-
   public AutonomusSelector autonomusSelector = new AutonomusSelector(swerve, shooter, intake, gut);
 
 
   public RobotContainer() {
+    shooter.gutInput(gut);
     configureButtonBindings();
   }
 

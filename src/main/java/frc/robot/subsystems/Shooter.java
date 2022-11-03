@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.subsystems.Gut;
 
 
 public class Shooter {
@@ -15,14 +16,18 @@ public class Shooter {
   // declare motor and encoder
   private CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   private RelativeEncoder encoder = motor1.getEncoder();
-  private PIDController PIDController = new PIDController(1, 0, 0);
+  private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
   private double setpoint = 0.0;
   private ShooterState systemState = ShooterState.IDLE;
   private boolean requestShoot = false;
   private double timeLastStateChange;
-  public Shooter() {
 
-  }
+  public Shooter() {}
+
+  // get gut class
+  public Gut gut;
+
+  public void gutInput(Gut gut) {}
 
   public boolean canShoot() {
     return (systemState == ShooterState.AT_SETPOINT);
@@ -56,10 +61,12 @@ public class Shooter {
   }
 
   public void requestShoot(double rpm) {
+    gut.requestShoot();
     setpoint = rpm;
     requestShoot = true;
   }
 
+  // get ime MS
   private double getTime() {
     return RobotController.getFPGATime()/1.0E3;
   }
