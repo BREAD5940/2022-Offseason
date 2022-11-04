@@ -17,6 +17,8 @@ public class Shooter {
   private CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   private RelativeEncoder encoder = motor1.getEncoder();
   private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
+  
+  // declare values
   private double setpoint = 0.0;
   private ShooterState systemState = ShooterState.IDLE;
   private boolean requestShoot = false;
@@ -62,11 +64,11 @@ public class Shooter {
 
   public void requestShoot() {
     gut.requestShoot();
-    setpoint = 0.0; // shoot rpm
+    setpoint = 1.0; // shoot rpm
     requestShoot = true;
   }
 
-  // get ime MS
+  // get time MS
   private double getTime() {
     return RobotController.getFPGATime()/1.0E3;
   }
