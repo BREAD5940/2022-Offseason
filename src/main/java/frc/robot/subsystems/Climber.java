@@ -68,9 +68,11 @@ public class Climber {
     public void periodic() {
         // Handle states and climber limits
         if (climberState == ClimberStates.STOWED && !isClimberStowed()) {
-                climberMotor.set(-0.5);
+            climberMotor.set(-0.5);
         } else if (climberState == ClimberStates.DEPLOYED && !isClimberDeployed()) {
-                climberMotor.set(0.5);
+            climberMotor.set(0.5);
+        } else {
+            climberMotor.set(0.0);
         }
     }
 }
