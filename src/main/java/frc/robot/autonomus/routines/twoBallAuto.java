@@ -22,10 +22,10 @@ public class twoBallAuto {
   public void periodic() {
     double autoTime = getTime() - timeStarted;
 
-    if (autoTime >= 0 && autoTime < 1) {
-      //requestShoot
+    if (autoTime >= 0 && autoTime < 2) {
+      shooter.requestShoot();
     }
-    if (autoTime >= 1 && autoTime < 2){
+    if (autoTime >= 3 && autoTime < 5){
       swerve.requestManual(-1.0, 0.0, 0.0);
     }
   }

@@ -60,9 +60,9 @@ public class Shooter {
     requestShoot = false;
   }
 
-  public void requestShoot(double rpm) {
+  public void requestShoot() {
     gut.requestShoot();
-    setpoint = rpm;
+    setpoint = 0.0; // shoot rpm
     requestShoot = true;
   }
 

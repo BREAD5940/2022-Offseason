@@ -239,15 +239,14 @@ public class Gut {
         }
 
         // Outtake
-        if (gutState == GutStates.OUTTAKE_ONE_CARGO)
-
-        {
+        if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
 
             // State Outputs
             // gut.set(0.0);
             intake.requestDeploy(true);
 
             // Make sure shooter is idleing for the shoot
+            shooter.requestIdle();
 
             // State Transitions
 
