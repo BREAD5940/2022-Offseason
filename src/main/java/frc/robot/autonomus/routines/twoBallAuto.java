@@ -26,7 +26,7 @@ public class twoBallAuto {
       shooter.requestShoot();
     }
     if (autoTime >= 3 && autoTime < 5){
-      swerve.requestManual(-1.0, 0.0, 0.0);
+      swerve.requestManual(-0.5, 0.0, 0.0);
     }
   }
 }
