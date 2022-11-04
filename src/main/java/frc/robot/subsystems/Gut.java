@@ -29,6 +29,7 @@ public class Gut {
     private boolean requestShoot = false;
 
     // Motors
+    // names are distance from the intake 
     private CANSparkMax closeMotor;
     private CANSparkMax farMotor;
     
@@ -148,7 +149,7 @@ public class Gut {
         if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
-            // gut.set(0.5);
+            // gut.set(gutSpeed);
             intake.requestDeploy(false);
 
             // Make sure shooter is idleing for the barf acttion
@@ -169,7 +170,8 @@ public class Gut {
         if (gutState == GutStates.INTAKE_ONE_CARGO) {
 
             
-            farMotor.set(0.5);
+            closeMotor.set(gutSpeed);
+
             intake.requestDeploy(false);
 
             // Make sure the backmost roller is not running so that we dont spit
@@ -196,7 +198,8 @@ public class Gut {
         if (gutState == GutStates.INTAKE_TWO_CARGO) {
 
             // State Outputs
-            // gut.set(0.0);
+            farMotor.set(gutSpeed);
+            closeMotor.set(gutSpeed);
 
             // Make sure shooter is idleing for the shoot
             shooter.requestIdle();
@@ -219,10 +222,11 @@ public class Gut {
             if (shooter.canShoot()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-                    // gut.set(0.5);
+                    farMotor.set(gutSpeed);
+                    closeMotor.set(gutSpeed);
                     intake.requestDeploy(true);
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
-                //gut.set();
+                    closeMotor.set(gutSpeed);
                 }
             }
         }
