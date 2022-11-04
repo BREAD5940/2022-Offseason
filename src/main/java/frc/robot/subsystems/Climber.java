@@ -11,7 +11,6 @@ public class Climber {
     private enum ClimberStates {
         DEPLOYED, // Climber is deployed
         STOWED, // Climber is stowed and inactive
-        NONE // temp we have not added limits yet so wont no anything so we dont break climber
     }
     private ClimberStates climberState;
     
@@ -26,7 +25,7 @@ public class Climber {
     // Configure Climber upon instantiation
     public Climber() {
         // Initial state
-        climberState = ClimberStates.NONE; // set to STOWED when limits are added
+        climberState = ClimberStates.STOWED;
 
         // Initializing motor controller
         climberMotor = new CANSparkMax(CLIMBER_ID, null);
@@ -53,7 +52,7 @@ public class Climber {
 
     // get climber pos
     public double getClimberPos() {
-        return((climberEncoder.getPosition() - stowedEncoderPos) * 1); // add 360 rotation to hight change ratio instead of 1
+        return((climberEncoder.getPosition() - stowedEncoderPos) * 2.35619);
     }
 
     // make sure we dont over/under extend
@@ -62,7 +61,7 @@ public class Climber {
     }
 
     public boolean isClimberDeployed() {
-        return(getClimberPos() >= 0); // climber max extetion
+        return(getClimberPos() >= 23);
     }
 
     // Periodic method
@@ -73,7 +72,5 @@ public class Climber {
         } else if (climberState == ClimberStates.DEPLOYED && !isClimberDeployed()) {
                 climberMotor.set(0.5);
         }
-        // temp code to reset climberState because limits are not added
-        climberState = ClimberStates.NONE;
     }
 }
