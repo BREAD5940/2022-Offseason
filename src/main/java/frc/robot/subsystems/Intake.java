@@ -32,7 +32,7 @@ public class Intake {
   private RelativeEncoder deploymentEncoder;
   private DigitalInput intakeLimit;
 
-  // Configuration Intake upon instantiation
+  // Configure Intake upon instantiation
   public Intake() {
     // Initial state
     intakeState = IntakeStates.HOMING;

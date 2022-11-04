@@ -218,7 +218,6 @@ public class Gut {
         }
 
         if (gutState == GutStates.SHOOT_CARGO) {
-
             // State Outputs
 
             // Shooter subsystem should watch for this as a flag then spin up flywheel
