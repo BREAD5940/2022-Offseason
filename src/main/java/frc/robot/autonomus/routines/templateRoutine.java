@@ -8,14 +8,14 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
 
-public class testRoutine {
+public class templateRoutine {
   public Swerve swerve;
   public Shooter shooter;
   public Intake intake;
   public Gut gut;
   public double timeStarted = getTime();
 
-  public testRoutine(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
+  public templateRoutine(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
   }
 
   private double getTime() {

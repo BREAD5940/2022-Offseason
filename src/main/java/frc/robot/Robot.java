@@ -2,18 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.XboxController.Button;
+
+
 
 public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
-
-  public static XboxController controller = new XboxController(0);
+  private Controls controls;
   private Object auto;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    controls = new Controls(m_robotContainer.swerve, m_robotContainer.shooter, m_robotContainer.intake, m_robotContainer.gut);
     m_robotContainer.intake.requestHome();
   }
 
@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    controls.periodic();
     m_robotContainer.swerve.updateOdometry();
     m_robotContainer.swerve.periodic();
     m_robotContainer.intake.periodic();
@@ -69,14 +70,5 @@ public class Robot extends TimedRobot {
   public void simulationPeriodic() {
   }
 
-  public void periodicTeleopControls() {
-    // Intake Controls
-    if (controller.getRightTriggerAxis() >= 0.1) {
-      m_robotContainer.intake.requestDeploy(false);
-    } else if (controller.getLeftTriggerAxis() >= 0.1) {
-      m_robotContainer.intake.requestDeploy(true);
-    } else {
-      m_robotContainer.intake.requestStow();
-    }
-  }
+  public void periodicTeleopControls() {}
 }

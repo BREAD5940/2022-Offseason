@@ -162,21 +162,6 @@ public class Swerve {
                 nextSystemState = SwerveState.TELEOP_MODE;
             }
         } else if (systemState == SwerveState.TELEOP_MODE) {
-            
-            // Swerve Controls
-            if (Robot.controller.getRawButton(Button.kStart.value)) {
-                reset(new Pose2d());
-            }
-            double x = Robot.controller.getRightY();
-            double y = Robot.controller.getRightX();
-
-            //Outputs 
-            double omega = Robot.controller.getLeftX();
-            double dx = Math.abs(x) > 0.05 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
-            double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
-            double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
-            setSpeeds(dx, dy, rot);
-
             if (requestManual) {
                 nextSystemState = SwerveState.Manual_MODE;
             }
