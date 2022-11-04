@@ -31,7 +31,7 @@ public class Gut {
     // Motors
     private CANSparkMax closeMotor;
     private CANSparkMax farMotor;
-
+    
     // Sensors
     public final ColorSensor colorSensor = new ColorSensor();
 
@@ -40,6 +40,7 @@ public class Gut {
     public double stateStartTime = 0.00;
     public Shooter shooter;
     public Intake intake;
+    private double gutSpeed = 0.5; 
 
     // Configure Gut on instantiation
     public Gut(Shooter shooter, Intake intake) {
@@ -117,11 +118,7 @@ public class Gut {
 
         // If we have one correct cargo
         if (gutState == GutStates.IDLE_ONE_CARGO) {
-
-            // State Outputs
-            // gut.set(0.0);
-
-            // State Transitions
+                // State Transitions
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
@@ -134,10 +131,6 @@ public class Gut {
 
         // If we have two correct cargo
         if (gutState == GutStates.IDLE_TWO_CARGO) {
-
-            // State Outputs
-            // gut.set(0.0);
-
             // State Transitions
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_TWO_CARGO;
@@ -159,6 +152,7 @@ public class Gut {
             intake.requestDeploy(false);
 
             // Make sure shooter is idleing for the barf acttion
+            shooter.requestIdle();
 
             // State Transitions
             if (!requestIntake) {
@@ -174,8 +168,8 @@ public class Gut {
         // If we have one ball and intaking
         if (gutState == GutStates.INTAKE_ONE_CARGO) {
 
-            // State Outputs
-            // gut.set(0.5); // only close to intake (might be none)
+            
+            farMotor.set(0.5);
             intake.requestDeploy(false);
 
             // Make sure the backmost roller is not running so that we dont spit
@@ -205,6 +199,7 @@ public class Gut {
             // gut.set(0.0);
 
             // Make sure shooter is idleing for the shoot
+            shooter.requestIdle();
 
             // State Transitions
             if (!requestIntake) {
@@ -227,7 +222,7 @@ public class Gut {
                     // gut.set(0.5);
                     intake.requestDeploy(true);
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
-                    // gut.set(0.5); // only shoot one ball
+                //gut.set();
                 }
             }
         }
@@ -241,7 +236,6 @@ public class Gut {
         if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
 
             // State Outputs
-            // gut.set(0.0);
             intake.requestDeploy(true);
 
             // Make sure shooter is idleing for the shoot
