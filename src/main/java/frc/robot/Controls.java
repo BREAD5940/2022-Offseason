@@ -51,9 +51,7 @@ public class Controls {
         double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
         swerve.setSpeeds(dx, dy, rot);
 
-<<<<<<< HEAD
       
-=======
         /* Operator Controls */
         // Climber Controls
         if (operator.getYButton()) {
@@ -63,6 +61,5 @@ public class Controls {
         } else {
             climber.requestStow();
         }
->>>>>>> 99cb0200c4a14aed7dae2d2a210653af8b36ffe8
     }
 }
