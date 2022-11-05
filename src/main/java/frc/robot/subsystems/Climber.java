@@ -87,6 +87,10 @@ public class Climber {
         }
     }
 
+    public boolean isHome() {
+        return climberState == ClimberStates.HOMING;
+    }
+
     // Periodic method
     public void periodic() {
         // Handle states and climber limits

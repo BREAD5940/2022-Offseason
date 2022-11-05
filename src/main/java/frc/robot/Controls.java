@@ -17,6 +17,7 @@ public class Controls {
     public Intake intake;
     public Gut gut;
     public Climber climber;
+    public boolean oneButton = true;
 
     // get subsystems
     public Controls(Swerve swerve, Shooter shooter, Intake intake, Gut gut, Climber climber) {
@@ -54,10 +55,31 @@ public class Controls {
       
         /* Operator Controls */
         // Climber Controls
-        if (operator.getAButton() && climber.isClimberStowed()) {
-            climber.requestDeploy();
-        } else {
-            climber.requestStow();
+
+        // check if the climber is homing
+        if (climber.isHome()){
+            // decide which type of control to use for climber 
+            if (oneButton) {
+                // for one button togle
+                if (operator.getAButton() && climber.isClimberStowed()) {
+                    climber.requestDeploy();
+                } else {
+                    climber.requestStow();
+                }
+            } else {
+                // for 2 button togle
+                if (operator.getAButton() && !climber.isClimberDeployed()) {
+                    climber.requestDeploy();
+                } else if (operator.getXButton() && !climber.isClimberStowed()) {
+                    climber.requestStow();
+                }
+            }
+        }
+
+        // Home climber 
+        // make sure add operator control
+        if (false) {
+            climber.requestHoming();
         }
     }
 }
