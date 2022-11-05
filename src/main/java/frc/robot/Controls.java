@@ -28,7 +28,8 @@ public class Controls {
         // Intake Controls
         if (driver.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
-        } else if (driver.getLeftTriggerAxis() >= 0.1) {
+            // operator
+        } else if (operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
         } else {
             intake.requestStow();
@@ -51,6 +52,13 @@ public class Controls {
         double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
         double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
         swerve.setSpeeds(dx, dy, rot);
+
+        // shooter
+        if (driver.getLeftTriggerAxis() >= 0.1) {
+            shooter.requestShoot();
+        } else {
+            shooter.requestIdle();
+        }
 
       
         /* Operator Controls */
