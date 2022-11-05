@@ -25,12 +25,12 @@ public class Controls {
 
     public void periodic() {
         /* Driver Controls */
-        
+
         // Intake Controls
         if (driver.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
             // operator
-        } else if (operator.getRightTriggerAxis() >= 0.1) {
+        } else if (operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
         } else {
             intake.requestStow();
