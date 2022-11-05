@@ -11,6 +11,7 @@ import frc.robot.sensors.ColorSensor;
 import static frc.robot.Constants.Gut.*;
 
 public class Gut {
+
     // State
     public enum GutStates {
         IDLE_NO_CARGO,
@@ -41,10 +42,12 @@ public class Gut {
     public double stateStartTime = 0.00;
     public Shooter shooter;
     public Intake intake;
-    private double gutSpeed = 0.5; 
+    private double gutSpeed = 0.5;
+    private Gut gut; 
 
     // Configure Gut on instantiation
-    public Gut(Shooter shooter, Intake intake) {
+    public Gut(Shooter shooter, Intake intake, Gut gut) {
+        this.gut = gut;
         this.shooter = shooter;
         this.intake = intake;
         
