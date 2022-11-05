@@ -11,13 +11,13 @@ import static frc.robot.Constants.Climber.*;
 public class Climber {
 
     // Makes states
-    private enum ClimberStates {
-        DEPLOYED, // Climber is deployed
-        STOWED, // Climber is stowed and inactive
-        HOMING, // Finds the stowed pos
-        MANUAL 
-    }
-    private ClimberStates climberState;
+    //private enum ClimberStates {
+    //    DEPLOYED, // Climber is deployed
+    //    STOWED, // Climber is stowed and inactive
+    //    HOMING, // Finds the stowed pos
+    //    MANUAL 
+    //}
+    //private ClimberStates climberState;
     
     //private boolean requestDeploy = false;
     //private boolean requestStowed = false;
@@ -25,7 +25,7 @@ public class Climber {
 
     // Motor/Encoder
     private CANSparkMax climberMotor;
-    private RelativeEncoder climberEncoder;
+    //private RelativeEncoder climberEncoder;
 
     // lastSystemState
     //private double lastSystemState;
@@ -33,7 +33,7 @@ public class Climber {
     // Configure Climber upon instantiation
     public Climber() {
         // Initial state
-        climberState = ClimberStates.STOWED;
+        //climberState = ClimberStates.STOWED;
 
         // Initializing motor controller
         climberMotor = new CANSparkMax(CLIMBER_ID, null);
@@ -42,8 +42,8 @@ public class Climber {
         climberMotor.restoreFactoryDefaults();
 
         // Initializing encoder
-        climberEncoder = climberMotor.getEncoder();
-        climberEncoder.setPosition(0);
+        //climberEncoder = climberMotor.getEncoder();
+        //climberEncoder.setPosition(0);
     }
 
 
