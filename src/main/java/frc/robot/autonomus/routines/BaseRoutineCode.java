@@ -1,20 +1,19 @@
 package frc.robot.autonomus.routines;
 
-import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter; 
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.Timer;
 
-
-public class templateRoutine {
+public class BaseRoutineCode {
   public Swerve swerve;
   public Shooter shooter;
   public Intake intake;
   public Gut gut;
-  //public Timer timer = new Timer();
+  public Timer timer = new Timer();
 
-  public templateRoutine(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
+  public BaseRoutineCode(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
     this.swerve = swerve;
     this.shooter = shooter;
     this.intake = intake;
@@ -22,10 +21,11 @@ public class templateRoutine {
   }
 
   public void start() {
-    //timer.
+    timer.reset();
+    timer.start();
   }
 
   public void periodic() {
-    
-  };
+
+  }
 }
