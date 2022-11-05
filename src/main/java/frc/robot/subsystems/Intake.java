@@ -6,14 +6,13 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 
 import static frc.robot.Constants.Intake.*;
 
 // Intake Subsystem
 public class Intake {
   // State
-  private enum IntakeStates {
+  private enum IntakeState {
     HOMING, // Homing state
     STOWED_INACTIVE, // Intake is stowed and inactive
     DEPLOYED_ACTIVE_IN, // Intake is deployed and actively intaking cargo
@@ -21,7 +20,11 @@ public class Intake {
   }
 
   // State
-  private IntakeStates intakeState;
+  private IntakeState systemState;
+  private boolean requestIntake = false;
+  private boolean requestOuttake = false;
+  private boolean requestStow = false;
+  private boolean requestHome = false;
 
   // Motors
   private CANSparkMax verticalRollerMotor;
@@ -37,7 +40,7 @@ public class Intake {
   // Configure Intake upon instantiation
   public Intake() {
     // Initial state
-    intakeState = IntakeStates.HOMING;
+    systemState = IntakeState.HOMING;
 
     // Initializing motor controllers
     verticalRollerMotor = new CANSparkMax(INTAKE_VERTICAL_ROLLER_ID, MotorType.kBrushless);
@@ -66,35 +69,21 @@ public class Intake {
 
   // Public method to request intake to return to home position
   public void requestHome() {
-    intakeState = IntakeStates.HOMING;
+    requestHome = true;
   }
 
   // Public method to request intake to deploy and either spin inwards or outwards
   public void requestDeploy(boolean outtake) {
     if (outtake) {
-      intakeState = IntakeStates.DEPLOYED_ACTIVE_OUT;
+      requestOuttake = true;
     } else {
-      intakeState = IntakeStates.DEPLOYED_ACTIVE_IN;
+      requestIntake = true;
     }
   }
 
   // Public method to request intake to stow
   public void requestStow() {
-    intakeState = IntakeStates.STOWED_INACTIVE;
-  }
-
-  // Public method to home intake
-  private void home() {
-    // TODO: Figure out a velocity value to check for
-    if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
-      // Setting proper encoder value
-      deploymentMotor.setVoltage(0.0);
-      deploymentEncoder.setPosition(0.0);
-
-      intakeState = IntakeStates.STOWED_INACTIVE;
-    } else {
-      deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
-    }
+    requestStow = true;
   }
 
   // Private method to deploy intake to its deployment setpoint
@@ -131,23 +120,64 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
-    IntakeStates nextSystemState = intakeState;
+    IntakeState nextSystemState = systemState;
 
-    if (intakeState == IntakeStates.HOMING) {
-      home();
-    } else if (intakeState == IntakeStates.STOWED_INACTIVE) {
+    if (nextSystemState == IntakeState.HOMING) {
+      // TODO: Figure out a velocity value to check for
+      if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
+        // Setting proper encoder value
+        deploymentMotor.setVoltage(0.0);
+        deploymentEncoder.setPosition(0.0);
+
+        // State Transition
+        nextSystemState = IntakeState.STOWED_INACTIVE;
+      } else {
+        deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
+      }
+    } else if (nextSystemState == IntakeState.STOWED_INACTIVE) {
+      // Outputs
       stow();
       stopRollers();
-    } else if (intakeState == IntakeStates.DEPLOYED_ACTIVE_IN) {
+
+      // State Transitions
+      if (requestHome) {
+        nextSystemState = IntakeState.HOMING;
+      } else if (requestIntake) {
+        nextSystemState = IntakeState.DEPLOYED_ACTIVE_IN;
+      } else if (requestOuttake) {
+        nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+      }
+    } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_IN) {
+      // Outputs
       deploy();
       spinRollers(false);
-    } else if (intakeState == IntakeStates.DEPLOYED_ACTIVE_OUT) {
+
+      // State Transitions
+      if (requestHome) {
+        nextSystemState = IntakeState.HOMING;
+      } else if (requestStow) {
+        nextSystemState = IntakeState.STOWED_INACTIVE;
+      } else if (requestOuttake) {
+        nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+      }
+    } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_OUT) {
+      // Outputs
       deploy();
       spinRollers(true);
+
+      // State Transitions
+      if (requestHome) {
+        nextSystemState = IntakeState.HOMING;
+      } else if (requestStow) {
+        nextSystemState = IntakeState.STOWED_INACTIVE;
+      } else if (requestIntake) {
+        nextSystemState = IntakeState.DEPLOYED_ACTIVE_IN;
+      }
     }
 
-    if (nextSystemState != intakeState) {
+    if (nextSystemState != systemState) {
       timeLastStateChange = getTime();
+      systemState = nextSystemState;
     }
   }
 }
