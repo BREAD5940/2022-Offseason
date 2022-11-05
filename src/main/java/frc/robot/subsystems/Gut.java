@@ -267,7 +267,6 @@ public class Gut {
                     gutState = GutStates.IDLE_ONE_CARGO;
                 }
             }
-
         }
     }
 }
