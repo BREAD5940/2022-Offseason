@@ -30,6 +30,8 @@ public class Controls {
         if (driver.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
             // operator
+        } else if (operator.getRightTriggerAxis() >= 0.1) {
+            intake.requestDeploy(true);
         } else {
             intake.requestStow();
         }
