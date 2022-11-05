@@ -87,7 +87,7 @@ public class Intake {
   // Public method to home intake
   private void home() {
     // TODO: Figure out a velocity value to check for
-    if (this.getVelocity() <= 1 && homingTimer.get() >= 0.5) {
+    if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
       // Setting proper encoder value
       deploymentMotor.setVoltage(0.0);
       deploymentEncoder.setPosition(0.0);
@@ -127,10 +127,10 @@ public class Intake {
     return Math.abs(deploymentEncoder.getVelocity());
   }
 
-    // get time S
-    private double getTime() {
-      return RobotController.getFPGATime() / 1.0E6;
-    }
+  // get time S
+  private double getTime() {
+    return RobotController.getFPGATime() / 1.0E6;
+  }
 
   // Public method to handle state / output functions
   public void periodic() {
