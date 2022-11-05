@@ -18,6 +18,9 @@ public class Climber {
     }
     private ClimberStates climberState;
     
+    private boolean requestDeploy = false;
+    private boolean requestStowed = false;
+    private boolean requestHoming = false;
 
     // Motor/Encoder
     private CANSparkMax climberMotor;
@@ -50,17 +53,17 @@ public class Climber {
 
     // Public method to request climber to deploy
     public void requestDeploy() {
-        climberState = ClimberStates.DEPLOYED;
+        requestDeploy = true;
     }
 
     // Public method to request climber to stow
     public void requestStow() {
-        climberState = ClimberStates.STOWED;
+        requestStowed = true;
     }
 
     // Public method to request climber to start homing
     public void requestHoming() {
-        climberState = ClimberStates.HOMING;
+        requestHoming = true;
     }
 
     // get climber pos
@@ -105,6 +108,14 @@ public class Climber {
     // Periodic method
     public void periodic() {
         ClimberStates nextSystemState = climberState;
+
+        if (requestHoming) {
+            climberState = ClimberStates.HOMING;
+        } else if (requestStowed) {
+            climberState = ClimberStates.STOWED;
+        } else if (requestDeploy) {
+            climberState = ClimberStates.DEPLOYED;
+        }
 
         // Handle states and climber limits
         if (climberState == ClimberStates.STOWED && !isClimberStowed()) {
