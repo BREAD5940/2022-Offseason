@@ -1,35 +1,29 @@
 package frc.robot.subsystems;
-import java.security.Principal;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.Gut;
-
 
 public class Shooter {
-      
+
   // declare motor and encoder
   private CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
   private RelativeEncoder encoder = motor1.getEncoder();
   private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
-  
+
   // declare values
   private double setpoint = 0.0;
   private ShooterState systemState = ShooterState.IDLE;
   private boolean requestShoot = false;
   private double timeLastStateChange;
 
-  public Shooter() {}
-
   // get gut class
   public Gut gut;
 
-  public void gutInput(Gut gut) {}
+  public void gutInput(Gut gut) {
+  }
 
   public boolean canShoot() {
     return (systemState == ShooterState.AT_SETPOINT && atSetPoint());
@@ -70,7 +64,7 @@ public class Shooter {
 
   // get time MS
   private double getTime() {
-    return RobotController.getFPGATime()/1.0E3;
+    return RobotController.getFPGATime() / 1.0E3;
   }
 
   public boolean atSetPoint() {
@@ -82,13 +76,13 @@ public class Shooter {
     if (requestShoot == false) {
       systemState = ShooterState.IDLE;
     } else {
-      if (systemState == ShooterState.IDLE) { 
+      if (systemState == ShooterState.IDLE) {
         systemState = ShooterState.APPROACHING_SETPOINT;
       }
     }
     if (systemState == ShooterState.IDLE) {
       setFlywheelRPM(0.0); // idle rpm
-    } else if (! atSetPoint()) { // this is so if the rpm is close then not close it still works
+    } else if (!atSetPoint()) { // this is so if the rpm is close then not close it still works
       systemState = ShooterState.APPROACHING_SETPOINT;
       setFlywheelRPM(setpoint);
     } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
@@ -108,10 +102,9 @@ public class Shooter {
     }
   }
 
-
   public enum ShooterState {
-    IDLE, 
-    APPROACHING_SETPOINT, 
+    IDLE,
+    APPROACHING_SETPOINT,
     STABALIZING, // 0.25 seconds are waited stablizing before we shoot
     AT_SETPOINT
   }
