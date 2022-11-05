@@ -58,7 +58,8 @@ public class Controls {
         swerve.setSpeeds(dx, dy, rot);
 
         // shooter
-        if (operator.getLeftStickButton()) {
+        // TODO: check to see which button the left paddle triggers
+        if (operator.getAButton()) {
             shooter.requestShoot(1); // shoot rpm
             gut.requestShoot();
         } else {
