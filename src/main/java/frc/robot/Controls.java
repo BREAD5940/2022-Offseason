@@ -27,12 +27,10 @@ public class Controls {
     }
 
     public void periodic() {
-        /* Driver Controls */
 
         // Intake Controls
         if (operator.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
-            // operator
         } else if (operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
         } else {
@@ -57,25 +55,27 @@ public class Controls {
         double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
         swerve.setSpeeds(dx, dy, rot);
 
-        // shooter
-        // TODO: check to see which button the left paddle triggers
+        // Shooter Controls
+
+        // check to see which button the left paddle triggers
         if (operator.getAButton()) {
-            shooter.requestShoot(1); // shoot rpm
+            shooter.requestShoot(1000); // shoot rpm
             gut.requestShoot();
         } else {
             shooter.requestIdle();
         }
 
-        /* Operator Controls */
-
         // Climber Controls
-
-        if (operator.getAButton()) {
-            climber.jogUp();
-        } else if (operator.getXButton()) {
-            climber.jogDown();
+        if (operator.getPOV() != -1) {
+            if (operator.getPOV() >= 315 || operator.getPOV() <= 45) {
+                climber.jogUp();
+            } else if (operator.getPOV() >= 225 || operator.getPOV() <= 135) {
+                climber.jogDown();
+            }
         }
 
+
+        // get overides
         if (operator.getRightBumper()) {
             gut.operatorSpinGut(true);
         } else if (operator.getLeftBumper()) {
