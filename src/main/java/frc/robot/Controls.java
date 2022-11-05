@@ -25,6 +25,7 @@ public class Controls {
 
     public void periodic() {
         /* Driver Controls */
+        
         // Intake Controls
         if (driver.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
@@ -62,6 +63,7 @@ public class Controls {
 
       
         /* Operator Controls */
+
         // Climber Controls
 
         // check if the climber is homing
