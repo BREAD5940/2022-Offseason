@@ -22,9 +22,9 @@ public class fourBallAuto {
   public void periodic() {
     double autoTime = getTime() - timeStarted;
 
-    //needs to be tested
+    // needs to be tested
 
-    //shoot two balls
+    // shoot two balls
     if (autoTime >= 0 && autoTime < 1.5) {
       gut.requestShoot();
     }
