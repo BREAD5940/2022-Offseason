@@ -86,6 +86,21 @@ public class Intake {
     requestStow = true;
   }
 
+  // Private method to home intake
+  private void home(IntakeState nextSystemState) {
+    // TODO: Figure out a velocity value to check for
+    if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
+      // Setting proper encoder value
+      deploymentMotor.setVoltage(0.0);
+      deploymentEncoder.setPosition(0.0);
+
+      // State Transition
+      nextSystemState = IntakeState.STOWED_INACTIVE;
+    } else {
+      deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
+    }
+  }
+
   // Private method to deploy intake to its deployment setpoint
   private void deploy() {
     deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
@@ -123,17 +138,7 @@ public class Intake {
     IntakeState nextSystemState = systemState;
 
     if (nextSystemState == IntakeState.HOMING) {
-      // TODO: Figure out a velocity value to check for
-      if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
-        // Setting proper encoder value
-        deploymentMotor.setVoltage(0.0);
-        deploymentEncoder.setPosition(0.0);
-
-        // State Transition
-        nextSystemState = IntakeState.STOWED_INACTIVE;
-      } else {
-        deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
-      }
+      home(nextSystemState);
     } else if (nextSystemState == IntakeState.STOWED_INACTIVE) {
       // Outputs
       stow();
