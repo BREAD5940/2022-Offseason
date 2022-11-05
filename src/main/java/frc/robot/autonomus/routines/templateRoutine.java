@@ -25,5 +25,7 @@ public class templateRoutine {
     //timer.
   }
 
-  public abstract void periodic();
+  public void periodic() {
+    
+  };
 }
