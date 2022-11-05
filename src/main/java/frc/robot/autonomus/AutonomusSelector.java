@@ -2,7 +2,6 @@ package frc.robot.autonomus;
 
 
 // import 
-import frc.robot.autonomus.routines.TemplateRoutine;
 import frc.robot.autonomus.routines.twoBallAuto;
 import frc.robot.autonomus.routines.threeBallAuto;
 import frc.robot.autonomus.routines.fourBallAuto;
@@ -20,7 +19,6 @@ public class AutonomusSelector {
     public AutonomusSelector(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
         autonomusSelector = new twoBallAuto(swerve, shooter, intake, gut);
     }
-    
 
     public twoBallAuto get(){
         return autonomusSelector;
