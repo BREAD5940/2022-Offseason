@@ -91,13 +91,11 @@ public class Intake {
     // TODO: Figure out a velocity value to check for
     if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
       // Setting proper encoder value
-      deploymentMotor.setVoltage(0.0);
       deploymentEncoder.setPosition(0.0);
 
       // State Transition
       nextSystemState = IntakeState.STOWED_INACTIVE;
     } else {
-      deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
     }
   }
 
