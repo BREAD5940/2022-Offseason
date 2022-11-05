@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.RobotController;
 public class Shooter {
 
   // declare motor and encoder
-  private CANSparkMax motor1 = new CANSparkMax(1, MotorType.kBrushless);
-  private RelativeEncoder encoder = motor1.getEncoder();
+  private CANSparkMax shooterMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private RelativeEncoder encoder = shooterMotor.getEncoder();
   private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
 
   // declare values
@@ -30,7 +30,7 @@ public class Shooter {
   }
 
   public void setVoltage() {
-    motor1.setVoltage(2000);
+    shooterMotor.setVoltage(2000);
   }
 
   public double getVelocity() {
@@ -38,11 +38,11 @@ public class Shooter {
   }
 
   public void setFlywheelRPM(double rpm) {
-    double e = rpm - getVelocity();
+    double rpmOffset = rpm - getVelocity();
     if (rpm <= 0.1) {
-      motor1.set(0.0);
+      shooterMotor.set(0.0);
     } else {
-      motor1.setVoltage(expectedVoltageNeeded(rpm) + PIDController.calculate(e));
+      shooterMotor.setVoltage(expectedVoltageNeeded(rpm) + PIDController.calculate(rpmOffset));
     }
   }
   
