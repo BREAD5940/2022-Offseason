@@ -34,7 +34,7 @@ public class AutonomusSelector {
         autonomusSelector.addOption(
             "none",
             new BaseRoutineCode(swerve, shooter, intake, gut)
-            );
+        );
     }
 
     public BaseRoutineCode get(){

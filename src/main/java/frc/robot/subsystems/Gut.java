@@ -83,8 +83,7 @@ public class Gut {
 
             // State Transitions
             if (requestIntake) {
-                if (colorSensor.getColorFar() == allianceColor
-                        && colorSensor.getColorClose() == Alliance.Invalid) {
+                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == Alliance.Invalid) {
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 }
 

@@ -51,9 +51,9 @@ public class Shooter {
     requestShoot = true;
   }
 
-  // get time MS
-  private double getTimeMS() {
-    return RobotController.getFPGATime() / 1.0E3;
+  // get time S
+  private double getTime() {
+    return RobotController.getFPGATime() / 1.0E6;
   }
 
   public boolean atSetPoint() {
@@ -62,34 +62,54 @@ public class Shooter {
 
   public void periodic() {
     ShooterState lastSystemState = systemState;
-    if (requestShoot == false) {
-      systemState = ShooterState.IDLE;
-    } else {
-      if (systemState == ShooterState.IDLE) {
+
+    if (systemState == ShooterState.IDLE) {
+
+      //output
+      setFlywheelRPM(0.0);
+
+      // state change
+      if (requestShoot == true) {
         systemState = ShooterState.APPROACHING_SETPOINT;
       }
-    }
-    if (systemState == ShooterState.IDLE) {
-      setFlywheelRPM(0.0); // idle rpm
-    } else if (!atSetPoint()) { // this is so if the rpm is close then not close it still works
-      systemState = ShooterState.APPROACHING_SETPOINT;
-      setFlywheelRPM(setpoint);
     } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
-      systemState = ShooterState.STABALIZING;
+      
+      //output
       setFlywheelRPM(setpoint);
+
+      // state change
+      if (atSetPoint()) {
+        systemState = ShooterState.STABALIZING;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
+      }
     } else if (systemState == ShooterState.STABALIZING) {
+
+      // output
       setFlywheelRPM(setpoint);
-      if (getTimeMS
-  () - timeLastStateChange >= 250) {
+
+      // state change
+      if (getTime() - timeLastStateChange >= 0.25) {
         systemState = ShooterState.AT_SETPOINT;
+      } else if (!atSetPoint()) {
+        systemState = ShooterState.APPROACHING_SETPOINT;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
       }
     } else if (systemState == ShooterState.AT_SETPOINT) {
+      
+      // output
       setFlywheelRPM(setpoint);
+      
+      // state change
+      if (!atSetPoint()) {
+        systemState = ShooterState.APPROACHING_SETPOINT;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
+      }
     }
-
     if (lastSystemState != systemState) {
-      timeLastStateChange = getTimeMS
-  ();
+      timeLastStateChange = getTime();
     }
   }
 
