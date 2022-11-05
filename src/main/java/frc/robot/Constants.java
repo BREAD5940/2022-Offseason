@@ -14,6 +14,12 @@ public final class Constants {
         public static final int GUT_FAR_ID = 19;
     }
 
+    // Constants pertaining to the Shooter subsystem go here
+    public static class Shooter {
+        // Motor Ids
+        public static final int SHOOTER_ID = 1;
+    }
+
     // Constants pertaining to the Intake subsystem go here
     public static class Intake {
         // Motor Ids

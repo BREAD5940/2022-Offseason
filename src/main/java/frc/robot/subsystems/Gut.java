@@ -45,6 +45,8 @@ public class Gut {
     public Shooter shooter;
     public Intake intake;
     private double gutSpeed = 0.5;
+    public boolean operatorRequestGut = false;
+    public boolean operatorRequestGutDirection = false;
 
     // Configure Gut on instantiation
     public Gut(Shooter shooter, Intake intake) {
@@ -79,6 +81,12 @@ public class Gut {
         return RobotController.getFPGATime() / 1.0E6;
     }
 
+    // operator requests
+    public void operatorSpinGut (Boolean spinBackward) {
+        operatorRequestGut = true;
+        operatorRequestGutDirection = spinBackward;
+    }
+
     // Public method to handle state / output functions
     public void periodic() {
         if (gutState == GutStates.IDLE_NO_CARGO) {
@@ -88,33 +96,28 @@ public class Gut {
 
             // State Transitions
             if (requestIntake) {
-                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == Alliance.Invalid) {
-                    gutState = GutStates.INTAKE_ONE_CARGO;
-                }
-
-                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-                    gutState = GutStates.INTAKE_TWO_CARGO;
-                }
-
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
+                    gutState = GutStates.INTAKE_ONE_CARGO;
+
+                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
+                    gutState = GutStates.INTAKE_TWO_CARGO;
+
+                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
+                    stateStartTime = getTime();
                     gutState = GutStates.OUTTAKE_ONE_CARGO;
                 }
 
             } else {
-                if (colorSensor.getColorFar() == allianceColor
-                        && colorSensor.getColorClose() == Alliance.Invalid) {
-
-                    gutState = GutStates.IDLE_ONE_CARGO;
-                }
-
-                if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-
-                    gutState = GutStates.IDLE_TWO_CARGO;
-                }
-
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
-
+                    gutState = GutStates.IDLE_ONE_CARGO;
+                    
+                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
+                    gutState = GutStates.IDLE_TWO_CARGO;
+                    
+                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
+                    stateStartTime = getTime();
                     gutState = GutStates.OUTTAKE_ONE_CARGO;
+
                 }
 
             }
@@ -123,7 +126,12 @@ public class Gut {
 
         // If we have one correct cargo
         if (gutState == GutStates.IDLE_ONE_CARGO) {
-                // State Transitions
+            
+            // state outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+
+            // State Transitions
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
@@ -136,6 +144,11 @@ public class Gut {
 
         // If we have two correct cargo
         if (gutState == GutStates.IDLE_TWO_CARGO) {
+
+            // State Outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+                        
             // State Transitions
             if (requestIntake && !requestShoot) {
                 gutState = GutStates.INTAKE_TWO_CARGO;
@@ -153,7 +166,9 @@ public class Gut {
         if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
-            // gut.set(gutSpeed);
+            farMotor.set(gutSpeed);
+            closeMotor.set(gutSpeed);
+
             intake.requestDeploy(false);
 
             // Make sure shooter is idleing for the barf acttion
@@ -173,28 +188,25 @@ public class Gut {
         // If we have one ball and intaking
         if (gutState == GutStates.INTAKE_ONE_CARGO) {
 
-            
+            // State Outputs
             closeMotor.set(gutSpeed);
+            farMotor.set(0);
 
             intake.requestDeploy(false);
 
-            // Make sure the backmost roller is not running so that we dont spit
-
             // State Transitions
-            if (!requestIntake) {
-                gutState = GutStates.IDLE_ONE_CARGO;
-            }
-
-            if (colorSensor.getColorClose() == allianceColor) {
-                gutState = GutStates.INTAKE_TWO_CARGO;
-            }
-
-            if (requestShoot) {
-                gutState = GutStates.SHOOT_CARGO;
-            }
-
             if (colorSensor.getColorClose() != allianceColor) {
+                stateStartTime = getTime();
                 gutState = GutStates.OUTTAKE_ONE_CARGO;
+
+            } else if (colorSensor.getColorClose() == allianceColor) {
+                gutState = GutStates.INTAKE_TWO_CARGO;
+
+            } else if (!requestIntake) {
+                gutState = GutStates.IDLE_ONE_CARGO;
+
+            } else if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
             }
 
         }
@@ -211,9 +223,7 @@ public class Gut {
             // State Transitions
             if (!requestIntake) {
                 gutState = GutStates.IDLE_TWO_CARGO;
-            }
-
-            if (requestShoot) {
+            } else if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
             }
 
@@ -221,46 +231,50 @@ public class Gut {
 
         if (gutState == GutStates.SHOOT_CARGO) {
             // State Outputs
+            farMotor.set(0);
+            closeMotor.set(0);
 
-            // Shooter subsystem should watch for this as a flag then spin up flywheel
+            // checks if the shooter is up to speed
             if (shooter.canShoot()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     farMotor.set(gutSpeed);
                     closeMotor.set(gutSpeed);
                     intake.requestDeploy(true);
+
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
-                    closeMotor.set(gutSpeed);
+                    farMotor.set(gutSpeed);
                 }
             }
-        }
-        // State Transitions
 
-        if (!requestShoot) {
-            gutState = GutStates.IDLE_NO_CARGO;
+            // State Transitions
+            if (!requestShoot) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            } else if (!shooter.isShooting()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+            
         }
+
 
         // Outtake
         if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
-
+            
             // State Outputs
             intake.requestDeploy(true);
+            closeMotor.set(-gutSpeed);
 
             // Make sure shooter is idleing for the shoot
             shooter.requestIdle();
 
             // State Transitions
-            if (!shooter.isShooting()) {
-                gutState = GutStates.IDLE_NO_CARGO;
-            }
-            else if (requestShoot) {
+            
+            if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
-            }
+            } else // Look down for the else \/
 
-            final double now = Timer.getMatchTime();
-
-            // poor formatting, wait for 0.7 seconds
-            if (getTime() - stateStartTime > 2) {
+            // wait for 0.7 seconds before state state can change
+            if (getTime() - stateStartTime > 0.7) {
                 if (requestIntake) {
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 } else {
@@ -268,5 +282,19 @@ public class Gut {
                 }
             }
         }
+
+
+        // Operator overides
+        if (operatorRequestGut) {
+            // spin backard if true
+            if (operatorRequestGutDirection) {
+                farMotor.set(-gutSpeed);
+                closeMotor.set(-gutSpeed);
+            } else {
+                farMotor.set(gutSpeed);
+                closeMotor.set(gutSpeed);
+            }
+        }
+
     }
 }

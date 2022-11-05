@@ -22,12 +22,12 @@ public class ColorSensor {
 
         sensor = serialMXP.readString();
 
-        if (sensor == "SENSOR1") {
+        if (sensor == "CLOSE") {
             close_r = Integer.parseInt(serialMXP.readString());
             close_b = Integer.parseInt(serialMXP.readString());
         }
 
-        if (sensor == "SENSOR2") {
+        if (sensor == "FAR") {
             far_r = Integer.parseInt(serialMXP.readString());
             far_b = Integer.parseInt(serialMXP.readString());
         }

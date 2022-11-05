@@ -6,11 +6,13 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
+import static frc.robot.Constants.Shooter.*;
+
 
 public class Shooter {
 
   // declare motor and encoder
-  private CANSparkMax shooterMotor = new CANSparkMax(1, MotorType.kBrushless);
+  private CANSparkMax shooterMotor = new CANSparkMax(SHOOTER_ID, MotorType.kBrushless);
   private RelativeEncoder encoder = shooterMotor.getEncoder();
   private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0, 1/473);
 

@@ -76,6 +76,12 @@ public class Controls {
             climber.jogDown();
         }
 
+        if (operator.getRightBumper()) {
+            gut.operatorSpinGut(true);
+        } else if (operator.getLeftBumper()) {
+            gut.operatorSpinGut(false);
+        }
+
         // old code
         /*
          * // check if the climber is homing
