@@ -11,6 +11,7 @@ public class Climber {
     private enum ClimberStates {
         DEPLOYED, // Climber is deployed
         STOWED, // Climber is stowed and inactive
+        HOMING, // Finds the stowed pos
     }
     private ClimberStates climberState;
     
@@ -50,6 +51,11 @@ public class Climber {
         climberState = ClimberStates.STOWED;
     }
 
+    // Public method to request climber to start homing
+    public void requestHoming() {
+        climberState = ClimberStates.HOMING;
+    }
+
     // get climber pos
     public double getClimberPos() {
         return((climberEncoder.getPosition() - stowedEncoderPos) * 2.35619);
@@ -64,6 +70,23 @@ public class Climber {
         return(getClimberPos() >= 23);
     }
 
+    // find the stowed pos of the climber
+    public void findStowedPos() {
+        // move climber down slowly
+        climberMotor.set(-0.05);
+
+        // check if climber is still moving
+        if (climberEncoder.getVelocity() < 1) {
+            climberMotor.set(0.0);
+
+            // set state to stowed
+            climberState = ClimberStates.STOWED;
+
+            // set pos to 0 when using getClimberPos()
+            stowedEncoderPos = climberEncoder.getPosition();
+        }
+    }
+
     // Periodic method
     public void periodic() {
         // Handle states and climber limits
@@ -71,6 +94,8 @@ public class Climber {
             climberMotor.set(-0.5);
         } else if (climberState == ClimberStates.DEPLOYED && !isClimberDeployed()) {
             climberMotor.set(0.5);
+        } else if (climberState == ClimberStates.HOMING) {
+            findStowedPos();
         } else {
             climberMotor.set(0.0);
         }
