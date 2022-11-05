@@ -1,26 +1,30 @@
 package frc.robot;
 
 public final class Constants {
+    // Constants pertaining to the Intake subsystem
     public static class Drive {
         // Motor Ids
-        public static final int[] ANGLE_IDS = { 10, 12, 14, 16 }; // Motor Ids for angle motors (Front)
-        public static final int[] DRIVE_IDS = { 11, 13, 15, 17 }; // Motor Ids for driving motors
+        // order: FL FR BL BR
+        // these are not updated is the swerver file change both if are change one
+        public static final int[] DRIVE_IDS = { 13, 11, 15, 17 }; // Motor Ids for driving motors
+        public static final int[] ANGLE_IDS = { 12, 10, 14, 16 }; // Motor Ids for angle motors (Front)
+        public static final int[] ENCODER_IDS = { 1, 3, 0, 2 }; // Motor Ids for encoders
     }
 
-    // Constants pertaining to the Gut subsystem go here
+    // Constants pertaining to the Gut subsystem
     public static class Gut {
         // Motor Ids
         public static final int GUT_CLOSE_ID = 18;
         public static final int GUT_FAR_ID = 19;
     }
 
-    // Constants pertaining to the Shooter subsystem go here
+    // Constants pertaining to the Shooter subsystem
     public static class Shooter {
         // Motor Ids
-        public static final int SHOOTER_ID = 1;
+        public static final int SHOOTER_ID = 24;
     }
 
-    // Constants pertaining to the Intake subsystem go here
+    // Constants pertaining to the Intake subsystem
     public static class Intake {
         // Motor Ids
         public static final int INTAKE_DEPLOYMENT_ID = 20;
@@ -34,7 +38,7 @@ public final class Constants {
         public static final double INTAKE_SETPOINT_EPSILON = 0.000001d;
     }
 
-    // Constants pertaining to the Climber subsystem go here
+    // Constants pertaining to the Climber subsystem
     public static class Climber {
         // Motor Ids
         public static final int CLIMBER_ID = 23;
