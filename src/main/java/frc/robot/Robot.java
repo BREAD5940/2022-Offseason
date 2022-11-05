@@ -24,15 +24,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    m_robotContainer.swerve.updateOdometry();
-    m_robotContainer.swerve.periodic();
-    m_robotContainer.intake.periodic();
     auto = m_robotContainer.getAutonomous();
   }
 
   @Override
   public void autonomousPeriodic() {
-    
+    m_robotContainer.swerve.updateOdometry();
+    m_robotContainer.swerve.periodic();
+    m_robotContainer.intake.periodic();
     auto.periodic();
   }
 
