@@ -31,7 +31,6 @@ public class Intake {
   // Encoders, Controllers, and others
   private SparkMaxPIDController deploymentPid;
   private RelativeEncoder deploymentEncoder;
-  private Timer homingTimer;
 
   private double timeLastStateChange;
 
