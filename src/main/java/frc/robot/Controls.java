@@ -29,8 +29,6 @@ public class Controls {
         if (driver.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
             // operator
-        } else if (operator.getLeftTriggerAxis() >= 0.1) {
-            intake.requestDeploy(true);
         } else {
             intake.requestStow();
         }
@@ -60,13 +58,12 @@ public class Controls {
             shooter.requestIdle();
         }
 
-      
         /* Operator Controls */
         // Climber Controls
 
         // check if the climber is homing
-        if (climber.isHome()){
-            // decide which type of control to use for climber 
+        if (climber.isHome()) {
+            // decide which type of control to use for climber
             if (oneButton) {
                 // for one button togle
                 if (operator.getAButton() && climber.isClimberStowed()) {
@@ -84,7 +81,7 @@ public class Controls {
             }
         }
 
-        // Home climber 
+        // Home climber
         // make sure add operator control
         if (false) {
             climber.requestHoming();
