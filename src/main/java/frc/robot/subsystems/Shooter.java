@@ -12,7 +12,6 @@ public class Shooter {
   // declare motor and encoder
   private CANSparkMax shooterMotor = new CANSparkMax(1, MotorType.kBrushless);
   private RelativeEncoder encoder = shooterMotor.getEncoder();
-  private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
   private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0, 1/473);
 
   // declare values
@@ -23,6 +22,10 @@ public class Shooter {
 
   public Shooter() {
     encoder.setVelocityConversionFactor(1); // gear ratio
+  }
+
+  public boolean isShooting() {
+    return systemState != ShooterState.IDLE;
   }
 
   public boolean canShoot() {

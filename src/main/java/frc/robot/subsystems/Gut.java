@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.sensors.ColorSensor;
+import frc.robot.subsystems.swerve.Swerve;
+
 import static frc.robot.Constants.Gut.*;
 
 public class Gut {
@@ -47,7 +49,7 @@ public class Gut {
     public Gut(Shooter shooter, Intake intake) {
         this.shooter = shooter;
         this.intake = intake;
-        
+
         // Initial state
         gutState = GutStates.IDLE_NO_CARGO;
 
@@ -247,8 +249,10 @@ public class Gut {
             shooter.requestIdle();
 
             // State Transitions
-
-            if (requestShoot) {
+            if (!shooter.isShooting()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+            else if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
             }
 

@@ -13,16 +13,28 @@ public class twoBallAuto extends BaseRoutineCode{
   }
 
   public void periodic() {
-    // needs to be tested
+    boolean isShooting = false;
 
+    /* auto start */
+    // needs to be tested
+    
     // shoot two balls
     if (timer.get() >= 0 && timer.get() < 1.5) {
-      shooter.requestShoot(1);
-      gut.requestShoot();
+      isShooting = true;
     }
     // swerve out of the tarmac
     if (timer.get() >= 2 && timer.get() < 4){
       swerve.requestManual(-1.0, 0, 0);
-    }  
+    }
+
+    /* auto end */
+
+    // handles shooting
+    if (isShooting == true) {
+      shooter.requestShoot(1);
+      gut.requestShoot();
+    } else {
+      shooter.requestIdle();
+    }
   }
 }

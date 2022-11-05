@@ -12,12 +12,13 @@ public class fourBallAuto extends BaseRoutineCode{
   }
 
   public void periodic() {
-
+    boolean isShooting = false;
+    /* auto start */
     // needs to be tested
 
     // shoot two balls
     if (timer.get() >= 0 && timer.get() < 1.5) {
-      shooter.requestShoot(1);
+      isShooting = true;
     }
     if (timer.get() >= 3 && timer.get() < 5){
       swerve.requestManual(-0.5, 0.0, 0.0);
@@ -32,7 +33,17 @@ public class fourBallAuto extends BaseRoutineCode{
     }  
     // shoot two balls
     if (timer.get() >= 5 && timer.get() < 6.5) {
+      isShooting = true;
+    }
+
+    /* auto end */
+
+    // handles shooting
+    if (isShooting == true) {
       shooter.requestShoot(1);
+      gut.requestShoot();
+    } else {
+      shooter.requestIdle();
     }
   }
 }

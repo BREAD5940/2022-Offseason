@@ -40,6 +40,12 @@ public class Swerve {
     private Pose2d pose = matchOdometry.getPoseMeters();
     public final Field2d field = new Field2d();
 
+    // Swerve state enum
+    public enum SwerveState {
+        TELEOP_MODE, 
+        Manual_MODE,
+    }
+
     // State variables
     private boolean atVisionHeadingSetpoint = false;
     public static double ROBOT_MAX_SPEED = 4.29768;
@@ -50,11 +56,6 @@ public class Swerve {
     private boolean requestManual = false;
     private double lastTransitioned = 0.0;
 
-    // Swerve state enum
-    public enum SwerveState {
-        TELEOP_MODE, 
-        Manual_MODE
-    }
 
     public Swerve() {
         // Might want to do some config in the constructor
@@ -65,6 +66,7 @@ public class Swerve {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, ySpeed, rot, pose.getRotation())
         );
+        
         SwerveDriveKinematics.desaturateWheelSpeeds(states, ROBOT_MAX_SPEED);
         fl.setState(states[0]);
         fr.setState(states[1]);

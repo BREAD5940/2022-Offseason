@@ -12,12 +12,14 @@ public class threeBallAuto extends BaseRoutineCode{
   }
 
   public void periodic() {
-    
+    boolean isShooting = false;
+
+    /* auto start */
     // needs to be tested
 
     // shoot two balls
     if (timer.get() >= 0 && timer.get() < 1.5) {
-      shooter.requestShoot(1);
+      isShooting = true;
     }
     // swerve out of the tarmac
     if (timer.get() >= 2 && timer.get() < 4){
@@ -29,7 +31,17 @@ public class threeBallAuto extends BaseRoutineCode{
     }  
     // shoot two balls
     if (timer.get() >= 5 && timer.get() < 6.5) {
+      isShooting = true;
+    }
+
+    /* auto end */
+
+    // handles shooting
+    if (isShooting == true) {
       shooter.requestShoot(1);
+      gut.requestShoot();
+    } else {
+      shooter.requestIdle();
     }
   }
 }
