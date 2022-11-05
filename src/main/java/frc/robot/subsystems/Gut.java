@@ -45,11 +45,9 @@ public class Gut {
     public Shooter shooter;
     public Intake intake;
     private double gutSpeed = 0.5;
-    private Gut gut; 
 
     // Configure Gut on instantiation
-    public Gut(Shooter shooter, Intake intake, Gut gut) {
-        this.gut = gut;
+    public Gut(Shooter shooter, Intake intake) {
         this.shooter = shooter;
         this.intake = intake;
 
