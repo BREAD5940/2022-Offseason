@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     auto = m_robotContainer.getAutonomous();
+    auto.start();
 
     // reset systems
     m_robotContainer.intake.requestHome();
