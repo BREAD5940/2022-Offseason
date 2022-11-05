@@ -61,6 +61,9 @@ public class Intake {
     deploymentPid.setI(0);
     deploymentPid.setD(0);
     deploymentPid.setOutputRange(-0.5, 0.5);
+
+    // request home
+    requestHome();
   }
 
   // Public method to request intake to return to home position
