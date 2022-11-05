@@ -30,7 +30,7 @@ public class Controls {
         /* Driver Controls */
 
         // Intake Controls
-        if (driver.getRightTriggerAxis() >= 0.1) {
+        if (operator.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
             // operator
         } else if (operator.getLeftTriggerAxis() >= 0.1) {
@@ -58,7 +58,7 @@ public class Controls {
         swerve.setSpeeds(dx, dy, rot);
 
         // shooter
-        if (driver.getLeftTriggerAxis() >= 0.1) {
+        if (operator.getLeftStickButton()) {
             shooter.requestShoot(1); // shoot rpm
             gut.requestShoot();
         } else {
@@ -77,31 +77,31 @@ public class Controls {
 
         // old code
         /*
-        // check if the climber is homing
-        if (climber.isHome()) {
-            // decide which type of control to use for climber
-            if (oneButton) {
-                // for one button togle
-                if (operator.getAButton() && climber.isClimberStowed()) {
-                    climber.requestDeploy();
-                } else {
-                    climber.requestStow();
-                }
-            } else {
-                // for 2 button togle
-                if (operator.getAButton() && !climber.isClimberDeployed()) {
-                    climber.requestDeploy();
-                } else if (operator.getXButton() && !climber.isClimberStowed()) {
-                    climber.requestStow();
-                }
-            }
-        }
-
-        // Home climber
-        // make sure add operator control
-        if (false) {
-            climber.requestHoming();
-        }
-        */
+         * // check if the climber is homing
+         * if (climber.isHome()) {
+         * // decide which type of control to use for climber
+         * if (oneButton) {
+         * // for one button togle
+         * if (operator.getAButton() && climber.isClimberStowed()) {
+         * climber.requestDeploy();
+         * } else {
+         * climber.requestStow();
+         * }
+         * } else {
+         * // for 2 button togle
+         * if (operator.getAButton() && !climber.isClimberDeployed()) {
+         * climber.requestDeploy();
+         * } else if (operator.getXButton() && !climber.isClimberStowed()) {
+         * climber.requestStow();
+         * }
+         * }
+         * }
+         * 
+         * // Home climber
+         * // make sure add operator control
+         * if (false) {
+         * climber.requestHoming();
+         * }
+         */
     }
 }
