@@ -91,10 +91,8 @@ public class Intake {
       deploymentMotor.setVoltage(0.0);
       deploymentEncoder.setPosition(0.0);
 
-      homingTimer.stop();
       intakeState = IntakeStates.STOWED_INACTIVE;
     } else {
-      homingTimer.start();
       deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
     }
   }
