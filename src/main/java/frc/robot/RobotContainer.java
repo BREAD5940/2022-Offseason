@@ -9,7 +9,10 @@ import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Climber;
+
+// Autonomus
 import frc.robot.autonomus.AutonomusSelector;
+import frc.robot.autonomus.routines.twoBallAuto;
 
 public class RobotContainer {
   public Swerve swerve = new Swerve();
@@ -28,7 +31,7 @@ public class RobotContainer {
   private void configureButtonBindings() {
   }
 
-  public Object getAutonomous() {
+  public twoBallAuto getAutonomous() {
     return autonomusSelector.get();
   }
 }

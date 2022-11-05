@@ -1,25 +1,22 @@
 package frc.robot.autonomus.routines;
 
-
 import frc.robot.subsystems.swerve.Swerve;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-
-public class twoBallAuto {
+public class threeBallAuto {
   public Swerve swerve;
   public Shooter shooter;
   public Intake intake;
   public Gut gut;
   public double timeStarted = getTime();
 
-  public twoBallAuto(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
-  }
+  public threeBallAuto(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {}
 
   private double getTime() {
-    return RobotController.getFPGATime()/1.0E6;
+    return RobotController.getFPGATime() / 1.0E6;
   }
 
   public void periodic() {
@@ -33,7 +30,15 @@ public class twoBallAuto {
     }
     // swerve out of the tarmac
     if (autoTime >= 2 && autoTime < 4){
-      swerve.requestManual(-1.0, 0, 0);
+      swerve.requestManual(-1.0, -0.2, 1);
     }  
+    // swerve inside of tarmac
+    if (autoTime >= 3.5 && autoTime < 5){
+      swerve.requestManual(1.0, 0.2, -1);
+    }  
+    // shoot two balls
+    if (autoTime >= 5 && autoTime < 6.5) {
+      shooter.requestShoot();
+    }
   }
 }

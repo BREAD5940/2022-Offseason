@@ -3,13 +3,13 @@ package frc.robot;
 import javax.xml.namespace.QName;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-
+import frc.robot.autonomus.routines.twoBallAuto;
 
 public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private Controls controls;
-  private Object auto;
+  private twoBallAuto auto;
 
   @Override
   public void robotInit() {
@@ -24,12 +24,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.swerve.updateOdometry();
+    m_robotContainer.swerve.periodic();
+    m_robotContainer.intake.periodic();
     auto = m_robotContainer.getAutonomous();
   }
 
   @Override
   public void autonomousPeriodic() {
-    // auto.periodic();
+    
+    auto.periodic();
   }
 
   @Override
