@@ -5,7 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 import static frc.robot.Constants.Intake.*;
 
@@ -27,10 +27,10 @@ public class Intake {
   private CANSparkMax horizontalRollerMotor;
   private CANSparkMax deploymentMotor;
 
-  // Encoders, Controllers, and DIO Inputs
+  // Encoders, Controllers, and others
   private SparkMaxPIDController deploymentPid;
   private RelativeEncoder deploymentEncoder;
-  private DigitalInput intakeLimit;
+  private Timer homingTimer;
 
   // Configure Intake upon instantiation
   public Intake() {
@@ -50,7 +50,6 @@ public class Intake {
     // Initialize pid controller, deployment encoder, and limit switch
     deploymentPid = deploymentMotor.getPIDController();
     deploymentEncoder = deploymentMotor.getEncoder();
-    intakeLimit = new DigitalInput(0); // configure port later
 
     // Configure deployment encoder
     deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING * 360);
@@ -82,6 +81,22 @@ public class Intake {
     intakeState = IntakeStates.STOWED_INACTIVE;
   }
 
+  // Public method to home intake
+  private void home() {
+    // TODO: Figure out a velocity value to check for
+    if (this.getVelocity() <= 1 && homingTimer.get() >= 0.5) {
+      // Setting proper encoder value
+      deploymentMotor.setVoltage(0.0);
+      deploymentEncoder.setPosition(0.0);
+
+      homingTimer.stop();
+      intakeState = IntakeStates.STOWED_INACTIVE;
+    } else {
+      homingTimer.start();
+      deploymentMotor.setVoltage(-1.0); // TODO: Figure out a good voltage value
+    }
+  }
+
   // Private method to deploy intake to its deployment setpoint
   private void deploy() {
     deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
@@ -104,19 +119,15 @@ public class Intake {
     horizontalRollerMotor.set(0.0);
   }
 
+  // Private method that returns the velocity of the deployment encoder
+  private double getVelocity() {
+    return Math.abs(deploymentEncoder.getVelocity());
+  }
+
   // Public method to handle state / output functions
   public void periodic() {
     if (intakeState == IntakeStates.HOMING) {
-      // If limit switch is not triggered
-      if (!intakeLimit.get()) {
-        deploymentMotor.set(-0.5);
-      } else {
-        // Limit switch is triggered and intake is at homing pos
-        deploymentMotor.set(0.0);
-        deploymentEncoder.setPosition(0.0);
-
-        intakeState = IntakeStates.STOWED_INACTIVE;
-      }
+      home();
     } else if (intakeState == IntakeStates.STOWED_INACTIVE) {
       stow();
       stopRollers();
