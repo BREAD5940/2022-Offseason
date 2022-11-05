@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 
 import static frc.robot.Constants.Intake.*;
@@ -31,6 +32,8 @@ public class Intake {
   private SparkMaxPIDController deploymentPid;
   private RelativeEncoder deploymentEncoder;
   private Timer homingTimer;
+
+  private double timeLastStateChange;
 
   // Configure Intake upon instantiation
   public Intake() {
@@ -124,8 +127,15 @@ public class Intake {
     return Math.abs(deploymentEncoder.getVelocity());
   }
 
+    // get time S
+    private double getTime() {
+      return RobotController.getFPGATime() / 1.0E6;
+    }
+
   // Public method to handle state / output functions
   public void periodic() {
+    IntakeStates nextSystemState = intakeState;
+
     if (intakeState == IntakeStates.HOMING) {
       home();
     } else if (intakeState == IntakeStates.STOWED_INACTIVE) {
@@ -137,6 +147,10 @@ public class Intake {
     } else if (intakeState == IntakeStates.DEPLOYED_ACTIVE_OUT) {
       deploy();
       spinRollers(true);
+    }
+
+    if (nextSystemState != intakeState) {
+      timeLastStateChange = getTime();
     }
   }
 }
