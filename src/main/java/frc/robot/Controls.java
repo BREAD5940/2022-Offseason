@@ -17,10 +17,13 @@ public class Controls {
     public Intake intake;
     public Gut gut;
     public Climber climber;
-    public boolean oneButton = true;
 
     // get subsystems
     public Controls(Swerve swerve, Shooter shooter, Intake intake, Gut gut, Climber climber) {
+        this.swerve = swerve;
+        this.shooter = shooter;
+        this.intake = intake;
+        this.gut = gut;
     }
 
     public void periodic() {
@@ -66,9 +69,9 @@ public class Controls {
 
         // Climber Controls
 
-        if (operator.getAButton() && !climber.isClimberDeployed()) {
+        if (operator.getAButton()) {
             climber.jogUp();
-        } else if (operator.getXButton() && !climber.isClimberStowed()) {
+        } else if (operator.getXButton()) {
             climber.jogDown();
         }
 

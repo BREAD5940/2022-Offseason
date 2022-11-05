@@ -28,7 +28,7 @@ public class Climber {
     private RelativeEncoder climberEncoder;
 
     // lastSystemState
-    private double lastSystemState;
+    //private double lastSystemState;
 
     // Configure Climber upon instantiation
     public Climber() {
@@ -54,6 +54,7 @@ public class Climber {
     public void jogDown() {
         climberMotor.set(-1);
     }
+
     //old code
     /*
     // Public method to request climber to deploy

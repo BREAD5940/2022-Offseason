@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 
     // reset systems
     m_robotContainer.intake.requestHome();
-    m_robotContainer.climber.requestHoming();
+    //m_robotContainer.climber.requestHoming();
   }
 
   @Override

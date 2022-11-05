@@ -135,11 +135,7 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
-<<<<<<< HEAD
-    IntakeStates lastSystemState = intakeState;
-=======
     IntakeState nextSystemState = systemState;
->>>>>>> 73fa01b34d8e725211d570aa973de89b7989fc96
 
     if (nextSystemState == IntakeState.HOMING) {
       home(nextSystemState);
@@ -184,11 +180,7 @@ public class Intake {
       }
     }
 
-<<<<<<< HEAD
-    if (lastSystemState != intakeState) {
-=======
     if (nextSystemState != systemState) {
->>>>>>> 73fa01b34d8e725211d570aa973de89b7989fc96
       timeLastStateChange = getTime();
       systemState = nextSystemState;
     }
