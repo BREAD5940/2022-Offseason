@@ -26,7 +26,7 @@ public class fourBallAuto {
 
     // shoot two balls
     if (autoTime >= 0 && autoTime < 1.5) {
-      gut.requestShoot();
+      shooter.requestShoot(1);
     }
     if (autoTime >= 3 && autoTime < 5){
       swerve.requestManual(-0.5, 0.0, 0.0);
@@ -41,7 +41,7 @@ public class fourBallAuto {
     }  
     // shoot two balls
     if (autoTime >= 5 && autoTime < 6.5) {
-      shooter.requestShoot();
+      shooter.requestShoot(1);
     }
   }
 }

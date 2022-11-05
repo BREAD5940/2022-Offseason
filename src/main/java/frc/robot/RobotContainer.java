@@ -23,9 +23,7 @@ public class RobotContainer {
 
   public AutonomusSelector autonomusSelector = new AutonomusSelector(swerve, shooter, intake, gut);
 
-  public RobotContainer() {
-    shooter.gutInput(gut);
-  }
+  public RobotContainer() {}
 
   public void periodic() {
     swerve.updateOdometry();

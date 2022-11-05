@@ -56,7 +56,8 @@ public class Controls {
 
         // shooter
         if (driver.getLeftTriggerAxis() >= 0.1) {
-            shooter.requestShoot();
+            shooter.requestShoot(1); // shoot rpm
+            gut.requestShoot();
         } else {
             shooter.requestIdle();
         }
@@ -65,6 +66,14 @@ public class Controls {
 
         // Climber Controls
 
+        if (operator.getAButton() && !climber.isClimberDeployed()) {
+            climber.jogUp();
+        } else if (operator.getXButton() && !climber.isClimberStowed()) {
+            climber.jogDown();
+        }
+
+        // old code
+        /*
         // check if the climber is homing
         if (climber.isHome()) {
             // decide which type of control to use for climber
@@ -90,5 +99,6 @@ public class Controls {
         if (false) {
             climber.requestHoming();
         }
+        */
     }
 }

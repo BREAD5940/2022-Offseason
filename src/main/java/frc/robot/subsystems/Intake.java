@@ -131,7 +131,7 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
-    IntakeStates nextSystemState = intakeState;
+    IntakeStates lastSystemState = intakeState;
 
     if (intakeState == IntakeStates.HOMING) {
       home();
@@ -146,7 +146,7 @@ public class Intake {
       spinRollers(true);
     }
 
-    if (nextSystemState != intakeState) {
+    if (lastSystemState != intakeState) {
       timeLastStateChange = getTime();
     }
   }

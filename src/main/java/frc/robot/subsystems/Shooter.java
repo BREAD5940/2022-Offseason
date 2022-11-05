@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
 
 public class Shooter {
@@ -12,6 +13,7 @@ public class Shooter {
   private CANSparkMax shooterMotor = new CANSparkMax(1, MotorType.kBrushless);
   private RelativeEncoder encoder = shooterMotor.getEncoder();
   private PIDController PIDController = new PIDController(1, 0, 0); // pid needs P tuning
+  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0, 1/473);
 
   // declare values
   private double setpoint = 0.0;
@@ -19,18 +21,12 @@ public class Shooter {
   private boolean requestShoot = false;
   private double timeLastStateChange;
 
-  // get gut class
-  public Gut gut;
-
-  public void gutInput(Gut gut) {
+  public Shooter() {
+    encoder.setVelocityConversionFactor(1); // gear ratio
   }
 
   public boolean canShoot() {
     return (systemState == ShooterState.AT_SETPOINT && atSetPoint());
-  }
-
-  public void setVoltage() {
-    shooterMotor.setVoltage(2000);
   }
 
   public double getVelocity() {
@@ -38,17 +34,11 @@ public class Shooter {
   }
 
   public void setFlywheelRPM(double rpm) {
-    double rpmOffset = rpm - getVelocity();
-    if (rpm <= 0.1) {
+    if (rpm <= 50) {
       shooterMotor.set(0.0);
     } else {
-      shooterMotor.setVoltage(expectedVoltageNeeded(rpm) + PIDController.calculate(rpmOffset));
+      shooterMotor.setVoltage(ff.calculate(rpm));
     }
-  }
-  
-  private double expectedVoltageNeeded(double rpm) {
-    // 473rpm per V
-    return rpm / 473;
   }
 
   public void requestIdle() {
@@ -56,14 +46,13 @@ public class Shooter {
     requestShoot = false;
   }
 
-  public void requestShoot() {
-    gut.requestShoot();
-    setpoint = 1.0; // shoot rpm
+  public void requestShoot(double rpm) {
+    setpoint = rpm;
     requestShoot = true;
   }
 
   // get time MS
-  private double getTime() {
+  private double getTimeMS() {
     return RobotController.getFPGATime() / 1.0E3;
   }
 
@@ -72,7 +61,7 @@ public class Shooter {
   }
 
   public void periodic() {
-    ShooterState nextSystemState = systemState;
+    ShooterState lastSystemState = systemState;
     if (requestShoot == false) {
       systemState = ShooterState.IDLE;
     } else {
@@ -90,15 +79,17 @@ public class Shooter {
       setFlywheelRPM(setpoint);
     } else if (systemState == ShooterState.STABALIZING) {
       setFlywheelRPM(setpoint);
-      if (getTime() - timeLastStateChange >= 250) {
+      if (getTimeMS
+  () - timeLastStateChange >= 250) {
         systemState = ShooterState.AT_SETPOINT;
       }
     } else if (systemState == ShooterState.AT_SETPOINT) {
       setFlywheelRPM(setpoint);
     }
 
-    if (nextSystemState != systemState) {
-      timeLastStateChange = getTime();
+    if (lastSystemState != systemState) {
+      timeLastStateChange = getTimeMS
+  ();
     }
   }
 

@@ -29,7 +29,7 @@ public class twoBallAuto {
 
     // shoot two balls
     if (autoTime >= 0 && autoTime < 1.5) {
-      shooter.requestShoot();
+      shooter.requestShoot(1);
     }
     // swerve out of the tarmac
     if (autoTime >= 2 && autoTime < 4){

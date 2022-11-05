@@ -2,7 +2,7 @@ package frc.robot.autonomus;
 
 
 // import 
-import frc.robot.autonomus.routines.templateRoutine;
+import frc.robot.autonomus.routines.TemplateRoutine;
 import frc.robot.autonomus.routines.twoBallAuto;
 import frc.robot.autonomus.routines.threeBallAuto;
 import frc.robot.autonomus.routines.fourBallAuto;

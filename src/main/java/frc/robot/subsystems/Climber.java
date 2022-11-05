@@ -15,6 +15,7 @@ public class Climber {
         DEPLOYED, // Climber is deployed
         STOWED, // Climber is stowed and inactive
         HOMING, // Finds the stowed pos
+        MANUAL 
     }
     private ClimberStates climberState;
     
@@ -26,11 +27,8 @@ public class Climber {
     private CANSparkMax climberMotor;
     private RelativeEncoder climberEncoder;
 
-    // Stowned pos
-    private double stowedEncoderPos;
-
-    // timeLastStateChange
-    private double timeLastStateChange;
+    // lastSystemState
+    private double lastSystemState;
 
     // Configure Climber upon instantiation
     public Climber() {
@@ -45,12 +43,19 @@ public class Climber {
 
         // Initializing encoder
         climberEncoder = climberMotor.getEncoder();
-
-        // get curent pos which sould when climber is stowed
-        stowedEncoderPos = climberEncoder.getPosition();
-        
+        climberEncoder.setPosition(0);
     }
 
+
+    public void jogUp() {
+        climberMotor.set(1);
+    }
+
+    public void jogDown() {
+        climberMotor.set(-1);
+    }
+    //old code
+    /*
     // Public method to request climber to deploy
     public void requestDeploy() {
         requestDeploy = true;
@@ -68,7 +73,7 @@ public class Climber {
 
     // get climber pos
     public double getClimberPos() {
-        return((climberEncoder.getPosition() - stowedEncoderPos) * 2.35619);
+        return((climberEncoder.getPosition()) * 2.35619);
     }
 
     // make sure we dont over/under extend
@@ -86,14 +91,14 @@ public class Climber {
         climberMotor.set(-0.05);
 
         // check if climber is still moving
-        if (climberEncoder.getVelocity() < 1 && timeLastStateChange + 1 < getTime()) {
+        if (climberEncoder.getVelocity() < 1 && lastSystemState + 1 < getTime()) {
             climberMotor.set(0.0);
 
             // set state to stowed
             climberState = ClimberStates.STOWED;
 
             // set pos to 0 when using getClimberPos()
-            stowedEncoderPos = climberEncoder.getPosition();
+            climberEncoder.setPosition(0);
         }
     }
 
@@ -129,7 +134,8 @@ public class Climber {
         }
 
         if (nextSystemState != climberState) {
-            timeLastStateChange = getTime();
+            lastSystemState = getTime();
         }
     }
+    */
 }
