@@ -88,6 +88,8 @@ public class Intake {
 
   // Private method to home intake
   private void home(IntakeState nextSystemState) {
+    deploymentMotor.set(-0.05);
+
     // TODO: Figure out a velocity value to check for
     if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
       // Setting proper encoder value
@@ -95,7 +97,6 @@ public class Intake {
 
       // State Transition
       nextSystemState = IntakeState.STOWED_INACTIVE;
-    } else {
     }
   }
 
