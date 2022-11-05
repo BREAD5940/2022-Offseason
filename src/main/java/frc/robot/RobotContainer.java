@@ -25,10 +25,15 @@ public class RobotContainer {
 
   public RobotContainer() {
     shooter.gutInput(gut);
-    configureButtonBindings();
   }
 
-  private void configureButtonBindings() {
+  public void periodic() {
+    swerve.updateOdometry();
+    swerve.periodic();
+    climber.periodic();
+    intake.periodic();
+    shooter.periodic();
+    gut.periodic();
   }
 
   public twoBallAuto getAutonomous() {

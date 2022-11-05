@@ -32,9 +32,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    m_robotContainer.swerve.updateOdometry();
-    m_robotContainer.swerve.periodic();
-    m_robotContainer.intake.periodic();
+    m_robotContainer.periodic();
     auto.periodic();
   }
 
@@ -45,10 +43,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    m_robotContainer.periodic();
     controls.periodic();
-    m_robotContainer.swerve.updateOdometry();
-    m_robotContainer.swerve.periodic();
-    m_robotContainer.intake.periodic();
   }
 
   @Override
