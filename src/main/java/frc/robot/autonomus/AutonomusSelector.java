@@ -24,13 +24,17 @@ public class AutonomusSelector {
 
     public AutonomusSelector(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
         autonomusSelector.addOption(
-            "twoBall",
+            "two Ball",
             new twoBallAuto(swerve, shooter, intake, gut)
         );
         autonomusSelector.addOption(
-            "threeBall",
+            "three Ball",
             new threeBallAuto(swerve, shooter, intake, gut)
         );
+        autonomusSelector.addOption(
+            "none",
+            new BaseRoutineCode(swerve, shooter, intake, gut)
+            );
     }
 
     public BaseRoutineCode get(){

@@ -25,7 +25,5 @@ public class BaseRoutineCode {
     timer.start();
   }
 
-  public void periodic() {
-
-  }
+  public void periodic() {}
 }
