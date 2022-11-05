@@ -48,10 +48,10 @@ public class Shooter {
     if (rpm <= 0.1) {
       motor1.set(0.0);
     } else {
-      motor1.set(expectedVoltageNeeded(rpm) + PIDController.calculate(e));
+      motor1.setVoltage(expectedVoltageNeeded(rpm) + PIDController.calculate(e));
     }
   }
-
+  
   private double expectedVoltageNeeded(double rpm) {
     // 473rpm per V
     return rpm / 473;
