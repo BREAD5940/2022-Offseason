@@ -19,9 +19,9 @@ public class Climber {
     }
     private ClimberStates climberState;
     
-    private boolean requestDeploy = false;
-    private boolean requestStowed = false;
-    private boolean requestHoming = false;
+    //private boolean requestDeploy = false;
+    //private boolean requestStowed = false;
+    //private boolean requestHoming = false;
 
     // Motor/Encoder
     private CANSparkMax climberMotor;

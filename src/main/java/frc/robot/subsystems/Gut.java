@@ -45,7 +45,9 @@ public class Gut {
 
     // Configure Gut on instantiation
     public Gut(Shooter shooter, Intake intake) {
-
+        this.shooter = shooter;
+        this.intake = intake;
+        
         // Initial state
         gutState = GutStates.IDLE_NO_CARGO;
 
