@@ -3,13 +3,13 @@ package frc.robot;
 import javax.xml.namespace.QName;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.autonomus.routines.twoBallAuto;
+import frc.robot.autonomus.routines.BaseRoutineCode;
 
 public class Robot extends TimedRobot {
   private RobotContainer m_robotContainer;
 
   private Controls controls;
-  private twoBallAuto auto;
+  private BaseRoutineCode auto;
 
   @Override
   public void robotInit() {

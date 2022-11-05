@@ -12,7 +12,7 @@ import frc.robot.subsystems.Climber;
 
 // Autonomus
 import frc.robot.autonomus.AutonomusSelector;
-import frc.robot.autonomus.routines.twoBallAuto;
+import frc.robot.autonomus.routines.BaseRoutineCode;
 
 public class RobotContainer {
   public Swerve swerve = new Swerve();
@@ -34,7 +34,7 @@ public class RobotContainer {
     gut.periodic();
   }
 
-  public twoBallAuto getAutonomous() {
+  public BaseRoutineCode getAutonomous() {
     return autonomusSelector.get();
   }
 }
