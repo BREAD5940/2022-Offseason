@@ -21,6 +21,7 @@ public class Shooter {
   private ShooterState systemState = ShooterState.IDLE;
   private boolean requestShoot = false;
   private double timeLastStateChange;
+  private boolean isStoped = false;
 
   public Shooter() {
     encoder.setVelocityConversionFactor(1); // gear ratio
@@ -42,7 +43,7 @@ public class Shooter {
     if (rpm <= 50) {
       shooterMotor.set(0.0);
     } else {
-      shooterMotor.setVoltage(ff.calculate(rpm));
+      shooterMotor.setVoltage(-ff.calculate(rpm));
     }
   }
 
@@ -65,56 +66,68 @@ public class Shooter {
     return Math.abs(setpoint - getVelocity()) < 50;
   }
 
+  public void start() {
+    isStoped = false;
+  }
+
+  public void stop() {
+    isStoped = true;
+  }
+
   public void periodic() {
-    ShooterState lastSystemState = systemState;
+    if (!isStoped) {
+      ShooterState lastSystemState = systemState;
 
-    if (systemState == ShooterState.IDLE) {
+      if (systemState == ShooterState.IDLE) {
 
-      //output
-      setFlywheelRPM(0.2);
+        //output
+        setFlywheelRPM(-0.2);
 
-      // state change
-      if (requestShoot == true) {
-        systemState = ShooterState.APPROACHING_SETPOINT;
+        // state change
+        if (requestShoot == true) {
+          systemState = ShooterState.APPROACHING_SETPOINT;
+        }
+      } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
+        
+        //output
+        setFlywheelRPM(setpoint);
+
+        // state change
+        if (atSetPoint()) {
+          systemState = ShooterState.STABALIZING;
+        } else if (requestShoot == false) {
+          systemState = ShooterState.IDLE;
+        }
+      } else if (systemState == ShooterState.STABALIZING) {
+
+        // output
+        setFlywheelRPM(setpoint);
+
+        // state change
+        if (getTime() - timeLastStateChange >= 0.25) {
+          systemState = ShooterState.AT_SETPOINT;
+        } else if (!atSetPoint()) {
+          systemState = ShooterState.APPROACHING_SETPOINT;
+        } else if (requestShoot == false) {
+          systemState = ShooterState.IDLE;
+        }
+      } else if (systemState == ShooterState.AT_SETPOINT) {
+        
+        // output
+        setFlywheelRPM(setpoint);
+        
+        // state change
+        if (!atSetPoint()) {
+          systemState = ShooterState.APPROACHING_SETPOINT;
+        } else if (requestShoot == false) {
+          systemState = ShooterState.IDLE;
+        }
       }
-    } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
-      
-      //output
-      setFlywheelRPM(setpoint);
-
-      // state change
-      if (atSetPoint()) {
-        systemState = ShooterState.STABALIZING;
-      } else if (requestShoot == false) {
-        systemState = ShooterState.IDLE;
+      if (lastSystemState != systemState) {
+        timeLastStateChange = getTime();
       }
-    } else if (systemState == ShooterState.STABALIZING) {
-
-      // output
-      setFlywheelRPM(setpoint);
-
-      // state change
-      if (getTime() - timeLastStateChange >= 0.25) {
-        systemState = ShooterState.AT_SETPOINT;
-      } else if (!atSetPoint()) {
-        systemState = ShooterState.APPROACHING_SETPOINT;
-      } else if (requestShoot == false) {
-        systemState = ShooterState.IDLE;
-      }
-    } else if (systemState == ShooterState.AT_SETPOINT) {
-      
-      // output
-      setFlywheelRPM(setpoint);
-      
-      // state change
-      if (!atSetPoint()) {
-        systemState = ShooterState.APPROACHING_SETPOINT;
-      } else if (requestShoot == false) {
-        systemState = ShooterState.IDLE;
-      }
-    }
-    if (lastSystemState != systemState) {
-      timeLastStateChange = getTime();
+    } else {
+      setFlywheelRPM(0.0);
     }
   }
 

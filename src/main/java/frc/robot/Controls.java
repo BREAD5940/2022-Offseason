@@ -26,6 +26,33 @@ public class Controls {
         this.gut = gut;
     }
 
+
+    
+        /*controls*/
+
+    /*
+        ---- driver ----
+    translate : Right JoyStick
+    rotation : Left JoyStick
+
+    reset rotation : kStart
+
+       ---- operator ----
+    intake roll in : Right Trigger
+    intake roll out : Left Trigger
+
+    shoot : A Button
+
+    stop shooter : Y Button
+    start shooter : X Button
+
+    climber up : pov pad up
+    cloimber down : pov pad down
+
+    spin gut in : Right Bumper
+    spin gut out : Left Bumper
+    */
+
     public void periodic() {
 
         // Intake Controls
@@ -65,21 +92,33 @@ public class Controls {
             shooter.requestIdle();
         }
 
+        // stop shooter
+
+        if (operator.getYButton()) {
+            shooter.stop();
+        } else if (operator.getXButton()) {
+            shooter.start();
+        }
+
         // Climber Controls
         if (operator.getPOV() != -1) {
             if (operator.getPOV() >= 315 || operator.getPOV() <= 45) {
                 climber.jogUp();
             } else if (operator.getPOV() >= 225 || operator.getPOV() <= 135) {
                 climber.jogDown();
+            } else {
+                climber.dontJog();
             }
+        } else {
+            climber.dontJog();
         }
 
 
-        // get overides
+        // gut overides
         if (operator.getRightBumper()) {
-            gut.operatorSpinGut(true);
-        } else if (operator.getLeftBumper()) {
             gut.operatorSpinGut(false);
+        } else if (operator.getLeftBumper()) {
+            gut.operatorSpinGut(true);
         }
 
         // old code
