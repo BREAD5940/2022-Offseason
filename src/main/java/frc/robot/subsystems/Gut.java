@@ -5,10 +5,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.sensors.ColorSensor;
-import frc.robot.subsystems.swerve.Swerve;
 
 import static frc.robot.Constants.Gut.*;
 

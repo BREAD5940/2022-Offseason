@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.autonomus.routines.twoBallAuto;
 import frc.robot.autonomus.routines.threeBallAuto;
 import frc.robot.autonomus.routines.BaseRoutineCode;
-import frc.robot.autonomus.routines.fourBallAuto;
 
 // import Subsystems
 import frc.robot.subsystems.swerve.Swerve;
@@ -20,7 +19,7 @@ import frc.robot.subsystems.Shooter;
 
 public class AutonomusSelector {
     private SendableChooser<BaseRoutineCode> autonomusSelector = new SendableChooser<BaseRoutineCode>();
-
+   
 
     public AutonomusSelector(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
         autonomusSelector.addOption(
