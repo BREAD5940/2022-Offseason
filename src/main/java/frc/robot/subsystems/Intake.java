@@ -6,6 +6,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.Intake.*;
 
@@ -90,10 +91,12 @@ public class Intake {
   private void home(IntakeState nextSystemState) {
     deploymentMotor.set(-0.05);
 
-    // TODO: Figure out a velocity value to check for
+    // Figure out a velocity value to check for
     if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
       // Setting proper encoder value
+      requestHome = false;
       deploymentEncoder.setPosition(0.0);
+      deploymentMotor.set(0.05);
 
       // State Transition
       nextSystemState = IntakeState.STOWED_INACTIVE;
@@ -134,6 +137,9 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
+
+    SmartDashboard.putNumber("intake position", deploymentEncoder.getPosition());
+    SmartDashboard.putNumber("intake velocity", deploymentEncoder.getVelocity());
     IntakeState nextSystemState = systemState;
 
     if (nextSystemState == IntakeState.HOMING) {
@@ -151,6 +157,7 @@ public class Intake {
       } else if (requestOuttake) {
         nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
       }
+
     } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_IN) {
       // Outputs
       deploy();

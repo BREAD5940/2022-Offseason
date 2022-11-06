@@ -24,6 +24,7 @@ public class Controls {
         this.shooter = shooter;
         this.intake = intake;
         this.gut = gut;
+        this.climber = climber;
     }
 
 
@@ -77,8 +78,8 @@ public class Controls {
         double omega = driver.getLeftX();
 
         // movement outputs
-        double dx = Math.abs(x) > 0.05 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
-        double dy = Math.abs(y) > 0.05 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
+        double dx = Math.abs(x) > 0.1 ? Math.pow(-x, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
+        double dy = Math.abs(y) > 0.1 ? Math.pow(-y, 1) * Swerve.ROBOT_MAX_SPEED : 0.0;
         double rot = Math.abs(omega) > 0.1 ? Math.pow(-omega, 3) * 2.5 : 0.0;
         swerve.setSpeeds(dx, dy, rot);
 
@@ -86,7 +87,7 @@ public class Controls {
 
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {
-            shooter.requestShoot(1000); // shoot rpm
+            shooter.requestShoot(4300.0*5.0/6.0); // shoot rpm
             gut.requestShoot();
         } else {
             shooter.requestIdle();
@@ -104,7 +105,7 @@ public class Controls {
         if (operator.getPOV() != -1) {
             if (operator.getPOV() >= 315 || operator.getPOV() <= 45) {
                 climber.jogUp();
-            } else if (operator.getPOV() >= 225 || operator.getPOV() <= 135) {
+            } else if (operator.getPOV() <= 225 && operator.getPOV() >= 135) {
                 climber.jogDown();
             } else {
                 climber.dontJog();
@@ -116,9 +117,9 @@ public class Controls {
 
         // gut overides
         if (operator.getRightBumper()) {
-            gut.operatorSpinGut(false);
-        } else if (operator.getLeftBumper()) {
             gut.operatorSpinGut(true);
+        } else if (operator.getLeftBumper()) {
+            gut.operatorSpinGut(false);
         }
 
         // old code

@@ -6,8 +6,8 @@ public final class Constants {
         // Motor Ids
         // order: FL FR BL BR
         // these are not updated is the swerver file change both if are change one
-        public static final int[] DRIVE_IDS = { 13, 11, 15, 17 }; // Motor Ids for driving motors
-        public static final int[] ANGLE_IDS = { 12, 10, 14, 16 }; // Motor Ids for angle motors (Front)
+        public static final int[] DRIVE_IDS = { 13, 10, 15, 17 }; // Motor Ids for driving motors
+        public static final int[] ANGLE_IDS = { 12, 11, 14, 16 }; // Motor Ids for angle motors (Front)
         public static final int[] ENCODER_IDS = { 1, 3, 0, 2 }; // Motor Ids for encoders
     }
 

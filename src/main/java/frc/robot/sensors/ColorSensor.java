@@ -53,11 +53,13 @@ public class ColorSensor {
 
     // Methods to call in other files to read the colors here
     public Alliance getColorClose() {
-        return closeColor;
+        //return closeColor;
+        return Alliance.Invalid;
     }
 
     public Alliance getColorFar() {
-        return farColor;
+        //return farColor;
+        return Alliance.Invalid;
     }
 
 }

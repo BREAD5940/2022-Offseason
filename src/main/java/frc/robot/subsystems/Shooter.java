@@ -81,7 +81,7 @@ public class Shooter {
       if (systemState == ShooterState.IDLE) {
 
         //output
-        setFlywheelRPM(-0.2);
+        setFlywheelRPM(0.0);
 
         // state change
         if (requestShoot == true) {

@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
 
@@ -36,7 +38,8 @@ public class Climber {
         //climberState = ClimberStates.STOWED;
 
         // Initializing motor controller
-        climberMotor = new CANSparkMax(CLIMBER_ID, null);
+        climberMotor = new CANSparkMax(CLIMBER_ID, MotorType.kBrushless);
+        climberMotor.setIdleMode(IdleMode.kBrake);
 
         // Restore motor controller factory defaults
         climberMotor.restoreFactoryDefaults();
@@ -48,11 +51,11 @@ public class Climber {
 
 
     public void jogUp() {
-        climberMotor.set(0.3);
+        climberMotor.set(-0.3);
     }
 
     public void jogDown() {
-        climberMotor.set(-0.3);
+        climberMotor.set(0.3);
     }
 
     public void dontJog() {
