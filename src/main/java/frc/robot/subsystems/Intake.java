@@ -93,12 +93,13 @@ public class Intake {
 
     // Figure out a velocity value to check for
     if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
+
       // Setting proper encoder value
-      requestHome = false;
       deploymentEncoder.setPosition(0.0);
       deploymentMotor.set(0.05);
 
       // State Transition
+      requestHome = false;
       nextSystemState = IntakeState.STOWED_INACTIVE;
     }
   }
@@ -115,8 +116,8 @@ public class Intake {
 
   // Private method to spin rollers
   private void spinRollers(boolean outtake) {
-    verticalRollerMotor.set(outtake ? -0.3 : 1.0);
-    horizontalRollerMotor.set(outtake ? -0.3 : 1.0);
+    verticalRollerMotor.set(outtake ? -0.3 : 0.5);
+    horizontalRollerMotor.set(outtake ? -0.3 : 0.5);
   }
 
   // Private method to stop rollers
@@ -143,7 +144,11 @@ public class Intake {
     IntakeState nextSystemState = systemState;
 
     if (nextSystemState == IntakeState.HOMING) {
+      SmartDashboard.putString("Intake State", "HOMING");
+
+      // Outputs and State Transitions
       home(nextSystemState);
+
     } else if (nextSystemState == IntakeState.STOWED_INACTIVE) {
       // Outputs
       stow();
@@ -159,6 +164,9 @@ public class Intake {
       }
 
     } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_IN) {
+      SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_IN");
+
+
       // Outputs
       deploy();
       spinRollers(false);
@@ -171,7 +179,11 @@ public class Intake {
       } else if (requestOuttake) {
         nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
       }
+
     } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_OUT) {
+      SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_OUT");
+
+
       // Outputs
       deploy();
       spinRollers(true);

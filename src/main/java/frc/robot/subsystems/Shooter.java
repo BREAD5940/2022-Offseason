@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import static frc.robot.Constants.Shooter.*;
 
 
@@ -63,7 +65,7 @@ public class Shooter {
   }
 
   public boolean atSetPoint() {
-    return Math.abs(setpoint - getVelocity()) < 50;
+    return Math.abs(setpoint - getVelocity()) < 100;
   }
 
   public void start() {
@@ -75,19 +77,23 @@ public class Shooter {
   }
 
   public void periodic() {
+   
     if (!isStoped) {
       ShooterState lastSystemState = systemState;
-
+      
       if (systemState == ShooterState.IDLE) {
+        SmartDashboard.putString("Shooter State", "IDLE");
 
         //output
-        setFlywheelRPM(0.0);
+        setpoint = 0;
+        setFlywheelRPM(setpoint);
 
         // state change
         if (requestShoot == true) {
           systemState = ShooterState.APPROACHING_SETPOINT;
         }
       } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
+        
         
         //output
         setFlywheelRPM(setpoint);
@@ -99,6 +105,7 @@ public class Shooter {
           systemState = ShooterState.IDLE;
         }
       } else if (systemState == ShooterState.STABALIZING) {
+        SmartDashboard.putString("Shooter State", "STABALIZING");
 
         // output
         setFlywheelRPM(setpoint);
@@ -112,7 +119,9 @@ public class Shooter {
           systemState = ShooterState.IDLE;
         }
       } else if (systemState == ShooterState.AT_SETPOINT) {
-        
+        SmartDashboard.putString("Shooter State", "AT_SETPOINT");
+
+
         // output
         setFlywheelRPM(setpoint);
         
@@ -127,6 +136,7 @@ public class Shooter {
         timeLastStateChange = getTime();
       }
     } else {
+      SmartDashboard.putString("Shooter State", "OFF");
       setFlywheelRPM(0.0);
     }
   }
