@@ -82,6 +82,10 @@ public class Intake {
     }
   }
 
+  public boolean isIntakeDeployed(){
+    return IntakeState.DEPLOYED_ACTIVE_IN == systemState;
+  }
+
   // Public method to request intake to stow
   public void requestStow() {
     requestStow = true;
@@ -99,7 +103,6 @@ public class Intake {
       deploymentMotor.set(0.05);
 
       // State Transition
-      requestHome = false;
       nextSystemState = IntakeState.STOWED_INACTIVE;
     }
   }
@@ -156,11 +159,14 @@ public class Intake {
 
       // State Transitions
       if (requestHome) {
+        requestHome = false;
         nextSystemState = IntakeState.HOMING;
       } else if (requestIntake) {
+        requestIntake = false;
         nextSystemState = IntakeState.DEPLOYED_ACTIVE_IN;
       } else if (requestOuttake) {
         nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+        requestOuttake = false;
       }
 
     } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_IN) {

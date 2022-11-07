@@ -26,7 +26,7 @@ public class Gut {
 
     // State
     private GutStates gutState;
-    private boolean requestIntake = false;
+    //private boolean intake.isIntakeDeployed() = false;
     private boolean requestShoot = false;
 
     // Motors
@@ -69,6 +69,10 @@ public class Gut {
         requestShoot = true;
     }
 
+    public void stopRequestShoot() {
+        requestShoot = false;
+    }
+
     // Public method to request a state reset
     public void requestReset(boolean reset) {
         gutState = GutStates.IDLE_NO_CARGO;
@@ -93,7 +97,7 @@ public class Gut {
             farMotor.set(0.0);
 
             // State Transitions
-            if (requestIntake) {
+            if (intake.isIntakeDeployed()) {
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
                     gutState = GutStates.INTAKE_ONE_CARGO;
 
@@ -130,7 +134,7 @@ public class Gut {
             farMotor.set(0.0);
 
             // State Transitions
-            if (requestIntake && !requestShoot) {
+            if (intake.isIntakeDeployed() && !requestShoot) {
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
 
@@ -148,7 +152,7 @@ public class Gut {
             farMotor.set(0.0);
                         
             // State Transitions
-            if (requestIntake && !requestShoot) {
+            if (intake.isIntakeDeployed() && !requestShoot) {
                 gutState = GutStates.INTAKE_TWO_CARGO;
             }
 
@@ -173,7 +177,7 @@ public class Gut {
             shooter.requestIdle();
 
             // State Transitions
-            if (!requestIntake) {
+            if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_NO_CARGO;
             }
 
@@ -200,7 +204,7 @@ public class Gut {
             } else if (colorSensor.getColorClose() == allianceColor) {
                 gutState = GutStates.INTAKE_TWO_CARGO;
 
-            } else if (!requestIntake) {
+            } else if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_ONE_CARGO;
 
             } else if (requestShoot) {
@@ -219,7 +223,7 @@ public class Gut {
             shooter.requestIdle();
 
             // State Transitions
-            if (!requestIntake) {
+            if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_TWO_CARGO;
             } else if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
@@ -273,7 +277,7 @@ public class Gut {
 
             // wait for 0.7 seconds before state state can change
             if (getTime() - stateStartTime > 0.7) {
-                if (requestIntake) {
+                if (intake.isIntakeDeployed()) {
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 } else {
                     gutState = GutStates.IDLE_ONE_CARGO;

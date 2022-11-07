@@ -91,6 +91,7 @@ public class Controls {
             gut.requestShoot();
         } else {
             shooter.requestIdle();
+            gut.stopRequestShoot();
         }
 
         // stop shooter
