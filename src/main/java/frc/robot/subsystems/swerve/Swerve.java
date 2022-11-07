@@ -56,6 +56,8 @@ public class Swerve {
     private boolean requestManual = false;
     private double lastTransitioned = 0.0;
 
+    // Stop movement before the robot resets the pose
+    public boolean canDrive = false;
 
     public Swerve() {
         // Might want to do some config in the constructor
@@ -87,6 +89,7 @@ public class Swerve {
 
     // Resets match odometry
     public void reset(Pose2d newPose) {
+        canDrive = true;
         matchOdometry.resetPosition(newPose, gyro.getRotation2d());
         pose = matchOdometry.getPoseMeters();
     }
@@ -150,6 +153,10 @@ public class Swerve {
     public void requestManual(double xSpeed, double ySpeed, double rot) {
         requestManual = true;
         requestTeleop = false;
+        if (!canDrive) {
+            xSpeed = 0.0;
+            ySpeed = 0.0;
+        }
         setSpeeds(xSpeed, ySpeed, rot);
     }
 
