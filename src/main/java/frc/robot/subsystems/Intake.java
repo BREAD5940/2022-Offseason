@@ -35,7 +35,7 @@ public class Intake {
 
   // Encoders, Controllers, and others
   private SparkMaxPIDController deploymentPid;
-  private RelativeEncoder deploymentEncoder;
+  public RelativeEncoder deploymentEncoder;
 
   private double timeLastStateChange;
 
@@ -59,14 +59,14 @@ public class Intake {
     deploymentEncoder = deploymentMotor.getEncoder();
 
     // Configure deployment encoder
-    deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING);
+    //deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING);
 
     // Configure deployment motor
     deploymentPid.setFeedbackDevice(deploymentEncoder);
     deploymentPid.setP(1);
     deploymentPid.setI(0);
     deploymentPid.setD(0);
-    deploymentPid.setOutputRange(-0.5, 0.5);
+    deploymentPid.setOutputRange(-0.25, 0.25);
   }
 
   // Public method to request intake to return to home position
@@ -92,21 +92,6 @@ public class Intake {
     requestStow = true;
   }
 
-  // Private method to home intake
-  private void home() {
-    deploymentMotor.setVoltage(-3);
-    // Figure out a velocity value to check for
-    if (this.getVelocity() < 10 && timeLastStateChange + 10 < getTime()) {
-
-      // Setting proper encoder value
-      deploymentEncoder.setPosition(0.0);
-      deploymentMotor.set(0.0);
-      
-      // State Transition
-      systemState = IntakeState.STOWED_INACTIVE;
-    }
-  }
-
   //public void testMoter() {
     //deploymentMotor.setVoltage(-3);
   //}
@@ -114,24 +99,24 @@ public class Intake {
 
   // Private method to deploy intake to its deployment setpoint
   private void deploy() {
-    if (deploymentEncoder.getPosition() < 5) {
+    /*if (deploymentEncoder.getPosition() < 5) {
       deploymentMotor.setVoltage(3);
     } else {
       deploymentMotor.setVoltage(0);
-    }
+    }*/
 
-    //deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
+    deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
   // Private method to stow intake to its stowing setpoint
   private void stow() {
-    if (deploymentEncoder.getPosition() > 1) {
+    /*if (deploymentEncoder.getPosition() > 1) {
       deploymentMotor.setVoltage(-3);
     } else {
       deploymentMotor.setVoltage(0);
-    }
+    }*/
 
-    //deploymentPid.setReference(INTAKE_STOWED_SETPOINT, CANSparkMax.ControlType.kPosition);
+    deploymentPid.setReference(INTAKE_STOWED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
   // Private method to spin rollers
@@ -158,8 +143,13 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
+
+    if (!didStateChange) {
+      didStateChange = true;
+      timeLastStateChange = getTime();
+    }
+
     SmartDashboard.putNumber("getVelocity", this.getVelocity());
-    SmartDashboard.putNumber("intake position", deploymentEncoder.getPosition());
     SmartDashboard.putNumber("intake velocity", deploymentEncoder.getVelocity());
     IntakeState nextSystemState = systemState;
 
@@ -167,8 +157,19 @@ public class Intake {
     if (systemState == IntakeState.HOMING) {
       SmartDashboard.putString("Intake State", "HOMING");
 
-      // Outputs and State Transitions
-      home();
+      // Outputs
+      deploymentMotor.setVoltage(-3);
+
+      // Figure out a velocity value to check for
+      if (this.getVelocity() < 10 && timeLastStateChange + 0.5 < getTime()) {
+
+        // Setting proper encoder value
+        deploymentEncoder.setPosition(0.0);
+        deploymentMotor.set(0.0);
+        
+        // State Transition
+        systemState = IntakeState.STOWED_INACTIVE;
+      }
 
     } else if (systemState == IntakeState.STOWED_INACTIVE) {
       SmartDashboard.putString("Intake State", "STOWED_INACTIVE");
@@ -200,9 +201,9 @@ public class Intake {
       if (requestHome) {
         requestHome = false;
         systemState = IntakeState.HOMING;
-      } else if (requestIntake) {
-        requestIntake = false;
-        systemState = IntakeState.DEPLOYED_ACTIVE_IN;
+      } else if (requestStow) {
+        requestStow = false;
+        systemState = IntakeState.STOWED_INACTIVE;
       } else if (requestOuttake) {
         systemState = IntakeState.DEPLOYED_ACTIVE_OUT;
         requestOuttake = false;
@@ -223,15 +224,10 @@ public class Intake {
       } else if (requestIntake) {
         requestIntake = false;
         systemState = IntakeState.DEPLOYED_ACTIVE_IN;
-      } else if (requestOuttake) {
-        systemState = IntakeState.DEPLOYED_ACTIVE_OUT;
-        requestOuttake = false;
+      } else if (requestStow) {
+        systemState = IntakeState.STOWED_INACTIVE;
+        requestStow = false;
       }
-    }
-
-    if (!didStateChange) {
-      didStateChange = true;
-      systemState = IntakeState.HOMING;
     }
 
     if (nextSystemState != systemState) {
