@@ -26,6 +26,7 @@ public class Intake {
   private boolean requestOuttake = false;
   private boolean requestStow = false;
   private boolean requestHome = false;
+  private boolean didStateChange = false;
 
   // Motors
   private CANSparkMax verticalRollerMotor;
@@ -58,7 +59,7 @@ public class Intake {
     deploymentEncoder = deploymentMotor.getEncoder();
 
     // Configure deployment encoder
-    deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING * 360);
+    deploymentEncoder.setPositionConversionFactor(INTAKE_GEARING);
 
     // Configure deployment motor
     deploymentPid.setFeedbackDevice(deploymentEncoder);
@@ -92,29 +93,45 @@ public class Intake {
   }
 
   // Private method to home intake
-  private void home(IntakeState nextSystemState) {
-    deploymentMotor.set(-0.05);
-
+  private void home() {
+    deploymentMotor.setVoltage(-3);
     // Figure out a velocity value to check for
-    if (this.getVelocity() < 1 && timeLastStateChange + 0.5 < getTime()) {
+    if (this.getVelocity() < 10 && timeLastStateChange + 10 < getTime()) {
 
       // Setting proper encoder value
       deploymentEncoder.setPosition(0.0);
-      deploymentMotor.set(0.05);
-
+      deploymentMotor.set(0.0);
+      
       // State Transition
-      nextSystemState = IntakeState.STOWED_INACTIVE;
+      systemState = IntakeState.STOWED_INACTIVE;
     }
   }
 
+  //public void testMoter() {
+    //deploymentMotor.setVoltage(-3);
+  //}
+
+
   // Private method to deploy intake to its deployment setpoint
   private void deploy() {
-    deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
+    if (deploymentEncoder.getPosition() < 5) {
+      deploymentMotor.setVoltage(3);
+    } else {
+      deploymentMotor.setVoltage(0);
+    }
+
+    //deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
   // Private method to stow intake to its stowing setpoint
   private void stow() {
-    deploymentPid.setReference(INTAKE_STOWED_SETPOINT, CANSparkMax.ControlType.kPosition);
+    if (deploymentEncoder.getPosition() > 1) {
+      deploymentMotor.setVoltage(-3);
+    } else {
+      deploymentMotor.setVoltage(0);
+    }
+
+    //deploymentPid.setReference(INTAKE_STOWED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
   // Private method to spin rollers
@@ -141,18 +158,20 @@ public class Intake {
 
   // Public method to handle state / output functions
   public void periodic() {
-
+    SmartDashboard.putNumber("getVelocity", this.getVelocity());
     SmartDashboard.putNumber("intake position", deploymentEncoder.getPosition());
     SmartDashboard.putNumber("intake velocity", deploymentEncoder.getVelocity());
     IntakeState nextSystemState = systemState;
 
-    if (nextSystemState == IntakeState.HOMING) {
+
+    if (systemState == IntakeState.HOMING) {
       SmartDashboard.putString("Intake State", "HOMING");
 
       // Outputs and State Transitions
-      home(nextSystemState);
+      home();
 
-    } else if (nextSystemState == IntakeState.STOWED_INACTIVE) {
+    } else if (systemState == IntakeState.STOWED_INACTIVE) {
+      SmartDashboard.putString("Intake State", "STOWED_INACTIVE");
       // Outputs
       stow();
       stopRollers();
@@ -160,16 +179,16 @@ public class Intake {
       // State Transitions
       if (requestHome) {
         requestHome = false;
-        nextSystemState = IntakeState.HOMING;
+        systemState = IntakeState.HOMING;
       } else if (requestIntake) {
         requestIntake = false;
-        nextSystemState = IntakeState.DEPLOYED_ACTIVE_IN;
+        systemState = IntakeState.DEPLOYED_ACTIVE_IN;
       } else if (requestOuttake) {
-        nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
         requestOuttake = false;
+        systemState = IntakeState.DEPLOYED_ACTIVE_OUT;
       }
 
-    } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_IN) {
+    } else if (systemState == IntakeState.DEPLOYED_ACTIVE_IN) {
       SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_IN");
 
 
@@ -179,14 +198,17 @@ public class Intake {
 
       // State Transitions
       if (requestHome) {
-        nextSystemState = IntakeState.HOMING;
-      } else if (requestStow) {
-        nextSystemState = IntakeState.STOWED_INACTIVE;
+        requestHome = false;
+        systemState = IntakeState.HOMING;
+      } else if (requestIntake) {
+        requestIntake = false;
+        systemState = IntakeState.DEPLOYED_ACTIVE_IN;
       } else if (requestOuttake) {
-        nextSystemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+        systemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+        requestOuttake = false;
       }
 
-    } else if (nextSystemState == IntakeState.DEPLOYED_ACTIVE_OUT) {
+    } else if (systemState == IntakeState.DEPLOYED_ACTIVE_OUT) {
       SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_OUT");
 
 
@@ -196,17 +218,24 @@ public class Intake {
 
       // State Transitions
       if (requestHome) {
-        nextSystemState = IntakeState.HOMING;
-      } else if (requestStow) {
-        nextSystemState = IntakeState.STOWED_INACTIVE;
+        requestHome = false;
+        systemState = IntakeState.HOMING;
       } else if (requestIntake) {
-        nextSystemState = IntakeState.DEPLOYED_ACTIVE_IN;
+        requestIntake = false;
+        systemState = IntakeState.DEPLOYED_ACTIVE_IN;
+      } else if (requestOuttake) {
+        systemState = IntakeState.DEPLOYED_ACTIVE_OUT;
+        requestOuttake = false;
       }
+    }
+
+    if (!didStateChange) {
+      didStateChange = true;
+      systemState = IntakeState.HOMING;
     }
 
     if (nextSystemState != systemState) {
       timeLastStateChange = getTime();
-      systemState = nextSystemState;
     }
   }
 }

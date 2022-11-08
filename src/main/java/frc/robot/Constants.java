@@ -32,7 +32,7 @@ public final class Constants {
         public static final int INTAKE_HORIZONTAL_ROLLER_ID = 22;
 
         // Set points and other values
-        public static final double INTAKE_GEARING = 1.0;
+        public static final double INTAKE_GEARING = 1/30;
         public static final double INTAKE_STOWED_SETPOINT = 0.0;
         public static final double INTAKE_DEPLOYED_SETPOINT = 0.0;
         public static final double INTAKE_SETPOINT_EPSILON = 0.000001d;
