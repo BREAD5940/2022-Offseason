@@ -92,7 +92,7 @@ public class Shooter {
           systemState = ShooterState.APPROACHING_SETPOINT;
         }
       } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
-        
+        SmartDashboard.putString("Shooter State", "APPROACHING"); 
         
         //output
         setFlywheelRPM(setpoint);
