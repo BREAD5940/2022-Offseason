@@ -8,6 +8,7 @@ import frc.robot.subsystems.Shooter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Controls {
     public static XboxController driver = new XboxController(0);

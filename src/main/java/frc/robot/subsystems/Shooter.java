@@ -15,7 +15,7 @@ public class Shooter {
   // declare motor and encoder
   private CANSparkMax shooterMotor = new CANSparkMax(SHOOTER_ID, MotorType.kBrushless);
   private RelativeEncoder encoder = shooterMotor.getEncoder();
-  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0, 1/473);
+  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.558, 0.00233777850058);
 
   // declare values
   private double setpoint = 0.0;
@@ -26,6 +26,7 @@ public class Shooter {
 
   public Shooter() {
     encoder.setVelocityConversionFactor(1); // gear ratio
+    shooterMotor.enableVoltageCompensation(12);
   }
 
   public boolean isShooting() {
@@ -41,15 +42,17 @@ public class Shooter {
   }
 
   public void setFlywheelRPM(double rpm) {
-    if (rpm <= 50) {
-      shooterMotor.set(0.0);
-    } else {
-      shooterMotor.setVoltage(-ff.calculate(rpm));
-    }
+    SmartDashboard.putNumber("setFlywheelRPM", rpm);
+    // if (rpm <= 50) {
+    //   shooterMotor.set(0.0);
+    // } else {
+    //   shooterMotor.setVoltage(-ff.calculate(rpm));
+    // }
+    shooterMotor.setVoltage(9);
   }
 
   public void requestIdle() {
-    setpoint = 0.0;
+    setpoint = 2000;
     requestShoot = false;
   }
 
@@ -76,69 +79,65 @@ public class Shooter {
   }
 
   public void periodic() {
+    SmartDashboard.putNumber("shooter rpm", encoder.getVelocity());
    
-    if (!isStoped) {
-      ShooterState lastSystemState = systemState;
+    //if (!isStoped) {
+    ShooterState lastSystemState = systemState;
+    SmartDashboard.putString("Shooter State", systemState.toString());
+
+    if (systemState == ShooterState.IDLE) {
+
+      //output
+      setFlywheelRPM(setpoint);
+
+      // state change
+      if (requestShoot == true) {
+        systemState = ShooterState.APPROACHING_SETPOINT;
+      }
+    } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
       
-      if (systemState == ShooterState.IDLE) {
-        SmartDashboard.putString("Shooter State", "IDLE");
+      
+      //output
+      setFlywheelRPM(setpoint);
 
-        //output
-        setpoint = 0;
-        setFlywheelRPM(setpoint);
-
-        // state change
-        if (requestShoot == true) {
-          systemState = ShooterState.APPROACHING_SETPOINT;
-        }
-      } else if (systemState == ShooterState.APPROACHING_SETPOINT) {
-        
-        
-        //output
-        setFlywheelRPM(setpoint);
-
-        // state change
-        if (atSetPoint()) {
-          systemState = ShooterState.STABALIZING;
-        } else if (requestShoot == false) {
-          systemState = ShooterState.IDLE;
-        }
-      } else if (systemState == ShooterState.STABALIZING) {
-        SmartDashboard.putString("Shooter State", "STABALIZING");
-
-        // output
-        setFlywheelRPM(setpoint);
-
-        // state change
-        if (getTime() - timeLastStateChange >= 0.25) {
-          systemState = ShooterState.AT_SETPOINT;
-        } else if (!atSetPoint()) {
-          systemState = ShooterState.APPROACHING_SETPOINT;
-        } else if (requestShoot == false) {
-          systemState = ShooterState.IDLE;
-        }
-      } else if (systemState == ShooterState.AT_SETPOINT) {
-        SmartDashboard.putString("Shooter State", "AT_SETPOINT");
-
-
-        // output
-        setFlywheelRPM(setpoint);
-        
-        // state change
-        if (!atSetPoint()) {
-          systemState = ShooterState.APPROACHING_SETPOINT;
-        } else if (requestShoot == false) {
-          systemState = ShooterState.IDLE;
-        }
+      // state change
+      if (atSetPoint()) {
+        systemState = ShooterState.STABALIZING;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
       }
-      if (lastSystemState != systemState) {
-        timeLastStateChange = getTime();
+    } else if (systemState == ShooterState.STABALIZING) {
+
+      // output
+      setFlywheelRPM(setpoint);
+
+      // state change
+      if (getTime() - timeLastStateChange >= 0.25) {
+        systemState = ShooterState.AT_SETPOINT;
+      } else if (!atSetPoint()) {
+        systemState = ShooterState.APPROACHING_SETPOINT;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
       }
-    } else {
-      SmartDashboard.putString("Shooter State", "OFF");
-      setFlywheelRPM(0.0);
+    } else if (systemState == ShooterState.AT_SETPOINT) {
+
+      // output
+      setFlywheelRPM(setpoint);
+      
+      // state change
+      if (!atSetPoint()) {
+        systemState = ShooterState.APPROACHING_SETPOINT;
+      } else if (requestShoot == false) {
+        systemState = ShooterState.IDLE;
+      }
     }
-  }
+    if (lastSystemState != systemState) {
+      timeLastStateChange = getTime();
+    }
+  } /*else {
+    SmartDashboard.putString("Shooter State", "OFF");
+    setFlywheelRPM(0.0);
+  }*/
 
   public enum ShooterState {
     IDLE,

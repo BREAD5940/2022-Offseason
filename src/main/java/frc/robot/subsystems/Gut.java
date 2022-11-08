@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.ColorSensor;
 
 import static frc.robot.Constants.Gut.*;
@@ -42,7 +43,7 @@ public class Gut {
     public double stateStartTime = 0.00;
     public Shooter shooter;
     public Intake intake;
-    private double gutSpeed = 0.5;
+    private double gutSpeed = 0.1;
     public boolean operatorRequestGut = false;
     public boolean operatorRequestGutDirection = false;
 
@@ -57,7 +58,6 @@ public class Gut {
         // Initializing motor controllers
         closeMotor = new CANSparkMax(GUT_CLOSE_ID, MotorType.kBrushless);
         farMotor = new CANSparkMax(GUT_FAR_ID, MotorType.kBrushless);
-        allianceColor = DriverStation.getAlliance();
 
         // Restore motor controller factory defaults
         closeMotor.restoreFactoryDefaults();
@@ -91,6 +91,9 @@ public class Gut {
 
     // Public method to handle state / output functions
     public void periodic() {
+        allianceColor = DriverStation.getAlliance();
+
+        SmartDashboard.putString("gutState", gutState.toString());
         if (gutState == GutStates.IDLE_NO_CARGO) {
             // State Outputs
             closeMotor.set(0.0);
@@ -104,9 +107,12 @@ public class Gut {
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
                     gutState = GutStates.INTAKE_TWO_CARGO;
 
-                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
+                } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != Alliance.Invalid) {
                     stateStartTime = getTime();
                     gutState = GutStates.OUTTAKE_ONE_CARGO;
+
+                } else if (colorSensor.getColorFar() != allianceColor && colorSensor.getColorClose() != allianceColor) {
+                    gutState = GutStates.INTAKE_NO_CARGO;
                 }
 
             } else {
@@ -119,15 +125,14 @@ public class Gut {
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
                     stateStartTime = getTime();
                     gutState = GutStates.OUTTAKE_ONE_CARGO;
-
-                }
+                } 
 
             }
 
         }
 
         // If we have one correct cargo
-        if (gutState == GutStates.IDLE_ONE_CARGO) {
+        else if (gutState == GutStates.IDLE_ONE_CARGO) {
             
             // state outputs
             closeMotor.set(0.0);
@@ -142,10 +147,10 @@ public class Gut {
                 gutState = GutStates.SHOOT_CARGO;
             }
 
-        }
+        } 
 
         // If we have two correct cargo
-        if (gutState == GutStates.IDLE_TWO_CARGO) {
+        else if (gutState == GutStates.IDLE_TWO_CARGO) {
 
             // State Outputs
             closeMotor.set(0.0);
@@ -165,13 +170,13 @@ public class Gut {
         // Intaking based states
 
         // If we have no cargo
-        if (gutState == GutStates.INTAKE_NO_CARGO) {
+        else if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
-            farMotor.set(gutSpeed);
+            farMotor.set(-gutSpeed);
             closeMotor.set(gutSpeed);
 
-            intake.requestDeploy(false);
+            //intake.requestDeploy(false);
 
             // Make sure shooter is idleing for the barf acttion
             shooter.requestIdle();
@@ -188,13 +193,13 @@ public class Gut {
         }
 
         // If we have one ball and intaking
-        if (gutState == GutStates.INTAKE_ONE_CARGO) {
+        else if (gutState == GutStates.INTAKE_ONE_CARGO) {
 
             // State Outputs
             closeMotor.set(gutSpeed);
             farMotor.set(0);
 
-            intake.requestDeploy(false);
+            //intake.requestDeploy(false);
 
             // State Transitions
             if (colorSensor.getColorClose() != allianceColor) {
@@ -213,7 +218,7 @@ public class Gut {
 
         }
 
-        if (gutState == GutStates.INTAKE_TWO_CARGO) {
+        else if (gutState == GutStates.INTAKE_TWO_CARGO) {
 
             // State Outputs
             farMotor.set(gutSpeed);
@@ -231,7 +236,7 @@ public class Gut {
 
         }
 
-        if (gutState == GutStates.SHOOT_CARGO) {
+        else if (gutState == GutStates.SHOOT_CARGO) {
             // State Outputs
             farMotor.set(0);
             closeMotor.set(0);
@@ -240,8 +245,8 @@ public class Gut {
             if (shooter.canShoot()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-                    farMotor.set(gutSpeed);
-                    closeMotor.set(gutSpeed);
+                    farMotor.set(0.5);
+                    closeMotor.set(0.5);
                     intake.requestDeploy(true);
 
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
@@ -260,7 +265,7 @@ public class Gut {
 
 
         // Outtake
-        if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
+        else if (gutState == GutStates.OUTTAKE_ONE_CARGO) {
             
             // State Outputs
             intake.requestDeploy(true);

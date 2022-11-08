@@ -149,8 +149,6 @@ public class Intake {
       timeLastStateChange = getTime();
     }
 
-    SmartDashboard.putNumber("getVelocity", this.getVelocity());
-    SmartDashboard.putNumber("intake velocity", deploymentEncoder.getVelocity());
     IntakeState nextSystemState = systemState;
 
 

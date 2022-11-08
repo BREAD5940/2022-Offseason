@@ -28,7 +28,6 @@ public class RobotContainer {
   public void periodic() {
     swerve.updateOdometry();
     swerve.periodic();
-    //climber.periodic();
     intake.periodic();
     shooter.periodic();
     gut.periodic();
