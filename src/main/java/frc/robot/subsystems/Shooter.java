@@ -15,7 +15,7 @@ public class Shooter {
   // declare motor and encoder
   private CANSparkMax shooterMotor = new CANSparkMax(SHOOTER_ID, MotorType.kBrushless);
   private RelativeEncoder encoder = shooterMotor.getEncoder();
-  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.558, 0.00233777850058);
+  private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.473684210526, 0.00199866755496);
 
   // declare values
   private double setpoint = 0.0;
@@ -43,12 +43,12 @@ public class Shooter {
 
   public void setFlywheelRPM(double rpm) {
     SmartDashboard.putNumber("setFlywheelRPM", rpm);
-    // if (rpm <= 50) {
-    //   shooterMotor.set(0.0);
-    // } else {
-    //   shooterMotor.setVoltage(-ff.calculate(rpm));
-    // }
-    shooterMotor.setVoltage(9);
+    if (rpm <= 50) {
+      shooterMotor.set(0.0);
+    } else {
+      shooterMotor.setVoltage(-ff.calculate(rpm));
+    }
+    //shooterMotor.setVoltage(9);
   }
 
   public void requestIdle() {
