@@ -37,13 +37,25 @@ public class Gut {
     
     // Sensors
     public final ColorSensor colorSensor = new ColorSensor();
+    public final Boolean beamBreakClose = false; // add beam break here
+    public final Boolean beamBreakFar = false; // add beam break here
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//                          look here
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
     // Other variables
     private Alliance allianceColor;
     public double stateStartTime = 0.00;
     public Shooter shooter;
     public Intake intake;
-    private double gutSpeed = 0.1;
+    private double gutSpeed = 0.5;
+    private double gutShootSpeed = 0.5;
     public boolean operatorRequestGut = false;
     public boolean operatorRequestGutDirection = false;
 
@@ -94,7 +106,301 @@ public class Gut {
         allianceColor = DriverStation.getAlliance();
 
         SmartDashboard.putString("gutState", gutState.toString());
+
+//----------------------------------------------------------------- start
+        // no sensor code
         if (gutState == GutStates.IDLE_NO_CARGO) {
+            // State Outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+
+            // State Transitions
+            if (intake.isIntakeDeployed()) {
+                gutState = GutStates.INTAKE_NO_CARGO;
+            }
+
+        }
+
+        // Intaking based states
+
+        else if (gutState == GutStates.INTAKE_NO_CARGO) {
+
+            // State Outputs
+            farMotor.set(-0.1);
+            closeMotor.set(0.1);
+
+            //intake.requestDeploy(false);
+
+            // Make sure shooter is idleing for the barf acttion
+            shooter.requestIdle();
+
+            // State Transitions
+            if (!intake.isIntakeDeployed()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+        }
+
+        else if (gutState == GutStates.SHOOT_CARGO) {
+            // State Outputs
+            farMotor.set(0);
+            closeMotor.set(0);
+
+            // checks if the shooter is up to speed
+            if (shooter.canShoot()) {
+                farMotor.set(gutShootSpeed);
+                closeMotor.set(gutShootSpeed);
+            }
+
+            // State Transitions
+            if (!requestShoot || !shooter.isShooting()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+
+        }
+
+//----------------------------------------------------------------- end
+    
+        // Operator overides
+        if (operatorRequestGut) {
+            // spin backard if true
+            if (operatorRequestGutDirection) {
+                farMotor.set(-gutSpeed);
+                closeMotor.set(-gutSpeed);
+            } else {
+                farMotor.set(gutSpeed);
+                closeMotor.set(gutSpeed);
+            }
+        }
+    }
+}
+
+
+/*
+    no sensor code
+--------------------------------------------------------
+    // no sensor code
+    if (gutState == GutStates.IDLE_NO_CARGO) {
+            // State Outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+
+            // State Transitions
+            if (intake.isIntakeDeployed()) {
+                gutState = GutStates.INTAKE_NO_CARGO;
+            }
+
+        }
+
+        // Intaking based states
+
+        else if (gutState == GutStates.INTAKE_NO_CARGO) {
+
+            // State Outputs
+            farMotor.set(-0.1);
+            closeMotor.set(0.1);
+
+            //intake.requestDeploy(false);
+
+            // Make sure shooter is idleing for the barf acttion
+            shooter.requestIdle();
+
+            // State Transitions
+            if (!intake.isIntakeDeployed()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+        }
+
+        else if (gutState == GutStates.SHOOT_CARGO) {
+            // State Outputs
+            farMotor.set(0);
+            closeMotor.set(0);
+
+            // checks if the shooter is up to speed
+            if (shooter.canShoot()) {
+                farMotor.set(gutShootSpeed);
+                closeMotor.set(gutShootSpeed);
+            }
+
+            // State Transitions
+            if (!requestShoot || !shooter.isShooting()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+        
+        }
+--------------------------------------------------------
+*/
+
+
+/*
+    beambreak code
+--------------------------------------------------------
+    // beambreak code
+    if (gutState == GutStates.IDLE_NO_CARGO) {
+            // State Outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+
+            // State Transitions
+            if (intake.isIntakeDeployed()) {
+                if (beamBreakFar == true && beamBreakClose == false) {
+                    gutState = GutStates.INTAKE_ONE_CARGO;
+
+                } else if (beamBreakFar == true && beamBreakClose == true) {
+                    gutState = GutStates.INTAKE_TWO_CARGO;
+
+                } else if (beamBreakFar == false && beamBreakFar == true) {
+                    gutState = GutStates.INTAKE_NO_CARGO;
+                }
+
+            } else {
+                if (beamBreakFar == true && beamBreakClose == false) {
+                    gutState = GutStates.IDLE_ONE_CARGO;
+                    
+                } else if (beamBreakFar == true && beamBreakClose == true) {
+                    gutState = GutStates.IDLE_TWO_CARGO;
+                    
+                }
+
+            }
+
+        }
+
+        // If we have one correct cargo
+        else if (gutState == GutStates.IDLE_ONE_CARGO) {
+            
+            // state outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+
+            // State Transitions
+            if (intake.isIntakeDeployed() && !requestShoot) {
+                gutState = GutStates.INTAKE_ONE_CARGO;
+            }
+
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+            }
+
+        } 
+
+        // If we have two correct cargo
+        else if (gutState == GutStates.IDLE_TWO_CARGO) {
+
+            // State Outputs
+            closeMotor.set(0.0);
+            farMotor.set(0.0);
+                        
+            // State Transitions
+            if (intake.isIntakeDeployed() && !requestShoot) {
+                gutState = GutStates.INTAKE_TWO_CARGO;
+            }
+
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+            }
+
+        }
+
+        // Intaking based states
+
+        // If we have no cargo
+        else if (gutState == GutStates.INTAKE_NO_CARGO) {
+
+            // State Outputs
+            farMotor.set(gutSpeed);
+            closeMotor.set(gutSpeed);
+
+            //intake.requestDeploy(false);
+
+            // Make sure shooter is idleing for the barf acttion
+            shooter.requestIdle();
+
+            // State Transitions
+            if (!intake.isIntakeDeployed()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+
+            if (beamBreakFar == true) {
+                gutState = GutStates.INTAKE_ONE_CARGO;
+            }
+
+        }
+
+        // If we have one ball and intaking
+        else if (gutState == GutStates.INTAKE_ONE_CARGO) {
+
+            // State Outputs
+            closeMotor.set(gutSpeed);
+            farMotor.set(0);
+
+            //intake.requestDeploy(false);
+
+            // State Transitions
+            if (beamBreakClose == true) {
+                gutState = GutStates.INTAKE_TWO_CARGO;
+
+            } else if (!intake.isIntakeDeployed()) {
+                gutState = GutStates.IDLE_ONE_CARGO;
+
+            } else if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+            }
+
+        }
+
+        else if (gutState == GutStates.INTAKE_TWO_CARGO) {
+
+            // State Outputs
+            farMotor.set(gutSpeed);
+            closeMotor.set(gutSpeed);
+
+            // Make sure shooter is idleing for the shoot
+            shooter.requestIdle();
+
+            // State Transitions
+            if (!intake.isIntakeDeployed()) {
+                gutState = GutStates.IDLE_TWO_CARGO;
+            } else if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+            }
+
+        }
+
+        else if (gutState == GutStates.SHOOT_CARGO) {
+            // State Outputs
+            farMotor.set(0);
+            closeMotor.set(0);
+
+            // checks if the shooter is up to speed
+            if (shooter.canShoot()) {
+
+                if (beamBreakFar == true && beamBreakClose == true) {
+                    farMotor.set(gutShootSpeed);
+                    closeMotor.set(gutShootSpeed);
+                    intake.requestDeploy(true);
+
+                } else if (beamBreakFar == true && beamBreakClose == false) {
+                    farMotor.set(gutSpeed);
+                }
+            }
+
+            // State Transitions
+            if (!requestShoot) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            } else if (!shooter.isShooting()) {
+                gutState = GutStates.IDLE_NO_CARGO;
+            }
+            
+        }
+--------------------------------------------------------
+*/
+
+
+/*
+    color sensor code
+--------------------------------------------------------
+    // color sensor code
+    if (gutState == GutStates.IDLE_NO_CARGO) {
             // State Outputs
             closeMotor.set(0.0);
             farMotor.set(0.0);
@@ -173,7 +479,7 @@ public class Gut {
         else if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
-            farMotor.set(-gutSpeed);
+            farMotor.set(gutSpeed);
             closeMotor.set(gutSpeed);
 
             //intake.requestDeploy(false);
@@ -202,7 +508,7 @@ public class Gut {
             //intake.requestDeploy(false);
 
             // State Transitions
-            if (colorSensor.getColorClose() != allianceColor) {
+            if (colorSensor.getColorClose() == Alliance.Invalid) {
                 stateStartTime = getTime();
                 gutState = GutStates.OUTTAKE_ONE_CARGO;
 
@@ -245,8 +551,8 @@ public class Gut {
             if (shooter.canShoot()) {
 
                 if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() == allianceColor) {
-                    farMotor.set(0.5);
-                    closeMotor.set(0.5);
+                    farMotor.set(gutSpeed);
+                    closeMotor.set(gutSpeed);
                     intake.requestDeploy(true);
 
                 } else if (colorSensor.getColorFar() == allianceColor && colorSensor.getColorClose() != allianceColor) {
@@ -289,19 +595,5 @@ public class Gut {
                 }
             }
         }
-
-
-        // Operator overides
-        if (operatorRequestGut) {
-            // spin backard if true
-            if (operatorRequestGutDirection) {
-                farMotor.set(-gutSpeed);
-                closeMotor.set(-gutSpeed);
-            } else {
-                farMotor.set(gutSpeed);
-                closeMotor.set(gutSpeed);
-            }
-        }
-
-    }
-}
+--------------------------------------------------------
+*/
