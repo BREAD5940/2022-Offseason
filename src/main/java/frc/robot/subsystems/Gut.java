@@ -104,6 +104,7 @@ public class Gut {
     // Public method to handle state / output functions
     public void periodic() {
         allianceColor = DriverStation.getAlliance();
+        SmartDashboard.putString("allianceColor", allianceColor.toString());
 
         SmartDashboard.putString("gutState", gutState.toString());
 
