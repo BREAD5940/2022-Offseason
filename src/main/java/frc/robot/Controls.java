@@ -88,6 +88,8 @@ public class Controls {
 
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {
+            SmartDashboard.putNumber("A button working?", 1);
+
             shooter.requestShoot(4800); // shoot rpm
             gut.requestShoot();
         } else {

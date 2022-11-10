@@ -16,7 +16,7 @@ public class Shooter {
     // declare motor and encoder
     private CANSparkMax shooterMotor = new CANSparkMax(SHOOTER_ID, MotorType.kBrushless);
     private RelativeEncoder encoder = shooterMotor.getEncoder();
-    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.473684210526, 0.00205);
+    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.3, 1/460.0);
 
     // declare values
     private double setpoint = 0.0;
@@ -28,7 +28,7 @@ public class Shooter {
 
     public Shooter() {
         encoder.setVelocityConversionFactor(1); // gear ratio
-        shooterMotor.enableVoltageCompensation(9.5);
+        shooterMotor.enableVoltageCompensation(12);
     }
 
     public boolean isShooting() {
@@ -55,12 +55,12 @@ public class Shooter {
     }
 
     public void requestIdle() {
-        setpoint = 2000;
+        setpoint = 1250;
         requestShoot = false;
     }
 
     public void requestShoot(double rpm) {
-        setpoint = rpm;
+        setpoint = rpm-50;
         requestShoot = true;
     }
 
