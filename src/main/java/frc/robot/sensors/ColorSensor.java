@@ -1,6 +1,7 @@
 package frc.robot.sensors;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class ColorSensor {
@@ -39,25 +40,32 @@ public class ColorSensor {
         if (close_r / close_b > colorRatio) {
             closeColor = Alliance.Red;
             close_ball_present = true;
+            SmartDashboard.putString("Gut Ball Close", "red");
         }
         else if (close_b / close_r > colorRatio) {
-            closeColor = Alliance.Red;
+            closeColor = Alliance.Blue;
             close_ball_present = true;
+            SmartDashboard.putString("Gut Ball Close", "blue");
         }
         else{
             close_ball_present = false;
+            SmartDashboard.putString("Gut Ball Close", "not present");
         }
 
         if (far_r / far_b > colorRatio) {
             farColor = Alliance.Red;
             far_ball_present = true;
+            SmartDashboard.putString("Gut Ball Far", "red");
         }
         else if (far_b / far_r > colorRatio) {
             farColor = Alliance.Blue;
             far_ball_present = true;
+            SmartDashboard.putString("Gut Ball Far", "blue");
         }
         else{
             far_ball_present = false;
+            SmartDashboard.putString("Gut Ball Far", "not present");
+
         }
 
     }
