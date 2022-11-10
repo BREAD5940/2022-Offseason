@@ -25,6 +25,7 @@ public class Shooter {
     private double timeLastStateChange;
     private boolean isStoped = false;
     private PIDController pidShooter = new PIDController(0.002, 0, 0);
+    private int barfRPM = 2000;
 
     public Shooter() {
         encoder.setVelocityConversionFactor(1); // gear ratio

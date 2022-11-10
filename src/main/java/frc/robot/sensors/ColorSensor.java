@@ -41,28 +41,23 @@ public class ColorSensor {
             closeColor = Alliance.Red;
             close_ball_present = true;
             SmartDashboard.putString("Gut Ball Close", "red");
-        }
-        else if (close_b / close_r > colorRatio) {
+        } else if (close_b / close_r > colorRatio) {
             closeColor = Alliance.Blue;
             close_ball_present = true;
             SmartDashboard.putString("Gut Ball Close", "blue");
-        }
-        else{
+        } else{
             close_ball_present = false;
             SmartDashboard.putString("Gut Ball Close", "not present");
         }
 
         if (far_r / far_b > colorRatio) {
-            farColor = Alliance.Red;
             far_ball_present = true;
             SmartDashboard.putString("Gut Ball Far", "red");
-        }
-        else if (far_b / far_r > colorRatio) {
+        } else if (far_b / far_r > colorRatio) {
             farColor = Alliance.Blue;
             far_ball_present = true;
             SmartDashboard.putString("Gut Ball Far", "blue");
-        }
-        else{
+        } else{
             far_ball_present = false;
             SmartDashboard.putString("Gut Ball Far", "not present");
 

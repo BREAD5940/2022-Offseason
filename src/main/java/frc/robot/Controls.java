@@ -1,6 +1,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.sensors.ColorSensor;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
@@ -9,6 +10,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
 
 public class Controls {
     public static XboxController driver = new XboxController(0);
@@ -89,8 +93,8 @@ public class Controls {
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {
             SmartDashboard.putNumber("A button working?", 1);
-
-            shooter.requestShoot(4800); // shoot rpm
+            
+            shooter.requestShoot(3200); // shoot rpm
             gut.requestShoot();
         } else {
             shooter.requestIdle();
