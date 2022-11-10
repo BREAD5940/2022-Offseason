@@ -1,6 +1,9 @@
 package frc.robot.sensors;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+
+import java.util.StringTokenizer;
+
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class ColorSensor {
@@ -17,6 +20,8 @@ public class ColorSensor {
     private Alliance farColor = Alliance.Invalid;
 
     SerialPort serialMXP = new SerialPort(9600, SerialPort.Port.kMXP);
+    StringTokenizer tokens = new StringTokenizer(serialMXP.readString());
+    // "10 10 10 10 10 10"
 
     public void periodic() {
 
