@@ -1,57 +1,63 @@
 package frc.robot.sensors;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-
-import java.util.StringTokenizer;
-
 import edu.wpi.first.wpilibj.SerialPort;
 
 public class ColorSensor {
     public int far_r = 0;
     public int far_b = 0;
+    public int far_g = 0;
     public int close_r = 0;
     public int close_b = 0;
+    public int close_g = 0;
+    public Boolean far_ball_present = false;
+    public Boolean close_ball_present = false;
 
     public String sensor = "";
 
-    public static int colorRatio = 4; // Ratio for color decision
+    public static int colorRatio = 2; // Ratio for color decision
 
     private Alliance closeColor = Alliance.Invalid;
     private Alliance farColor = Alliance.Invalid;
 
     SerialPort serialMXP = new SerialPort(9600, SerialPort.Port.kMXP);
-    StringTokenizer tokens = new StringTokenizer(serialMXP.readString());
-    // "10 10 10 10 10 10"
 
     public void periodic() {
 
         sensor = serialMXP.readString();
+        String[] values = sensor.split(" ");
+        close_r = Integer.parseInt(values[0]);
+        close_g = Integer.parseInt(values[1]);
+        close_b = Integer.parseInt(values[2]);
 
-        if (sensor == "CLOSE") {
-            close_r = Integer.parseInt(serialMXP.readString());
-            close_b = Integer.parseInt(serialMXP.readString());
-        }
-
-        if (sensor == "FAR") {
-            far_r = Integer.parseInt(serialMXP.readString());
-            far_b = Integer.parseInt(serialMXP.readString());
-        }
+        far_r = Integer.parseInt(values[3]);
+        far_g = Integer.parseInt(values[4]);
+        far_b = Integer.parseInt(values[5]);
+        
 
         // if there is colorRatio times red then blue it is probably red
         if (close_r / close_b > colorRatio) {
             closeColor = Alliance.Red;
-        } else if (close_b / close_r > colorRatio) {
+            close_ball_present = true;
+        }
+        else if (close_b / close_r > colorRatio) {
             closeColor = Alliance.Red;
-        } else {
-            closeColor = Alliance.Invalid;
+            close_ball_present = true;
+        }
+        else{
+            close_ball_present = false;
         }
 
         if (far_r / far_b > colorRatio) {
             farColor = Alliance.Red;
-        } else if (far_b / far_r > colorRatio) {
+            far_ball_present = true;
+        }
+        else if (far_b / far_r > colorRatio) {
             farColor = Alliance.Blue;
-        } else {
-            farColor = Alliance.Invalid;
+            far_ball_present = true;
+        }
+        else{
+            far_ball_present = false;
         }
 
     }
@@ -63,6 +69,14 @@ public class ColorSensor {
 
     public Alliance getColorFar() {
         return farColor;
+    }
+
+    public Boolean isBallClose(){
+        return close_ball_present;
+    }
+
+    public Boolean isBallFar(){
+        return far_ball_present;
     }
 
 }
