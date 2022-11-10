@@ -91,9 +91,7 @@ public class Controls {
         // Shooter Controls
 
         // check to see which button the left paddle triggers
-        if (operator.getAButton()) {
-            SmartDashboard.putNumber("A button working?", 1);
-            
+        if (operator.getAButton()) {            
             shooter.requestShoot(3200); // shoot rpm
             gut.requestShoot();
         } else {
