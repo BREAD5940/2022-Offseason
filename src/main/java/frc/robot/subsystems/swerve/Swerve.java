@@ -13,6 +13,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import frc.robot.Constants.Drive.*;
@@ -57,7 +58,6 @@ public class Swerve {
     private double lastTransitioned = 0.0;
 
     // Stop movement before the robot resets the pose
-    public boolean canDrive = false;
 
     public Swerve() {
         // Might want to do some config in the constructor
@@ -65,6 +65,7 @@ public class Swerve {
     }
 
     public void setSpeeds(double xSpeed, double ySpeed, double rot) {
+        SmartDashboard.putNumber("yay?", xSpeed);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, ySpeed, rot, pose.getRotation())
         );
@@ -89,7 +90,6 @@ public class Swerve {
 
     // Resets match odometry
     public void reset(Pose2d newPose) {
-        canDrive = true;
         matchOdometry.resetPosition(newPose, gyro.getRotation2d());
         pose = matchOdometry.getPoseMeters();
     }
@@ -153,10 +153,7 @@ public class Swerve {
     public void requestManual(double xSpeed, double ySpeed, double rot) {
         requestManual = true;
         requestTeleop = false;
-        if (!canDrive) {
-            xSpeed = 0.0;
-            ySpeed = 0.0;
-        }
+
         setSpeeds(xSpeed, ySpeed, rot);
     }
 
@@ -165,20 +162,17 @@ public class Swerve {
         SwerveState nextSystemState = systemState;
 
         if (systemState == SwerveState.Manual_MODE) {
-
-            // Outputs
             if (requestTeleop) {
-                nextSystemState = SwerveState.TELEOP_MODE;
+                systemState = SwerveState.TELEOP_MODE;
             }
         } else if (systemState == SwerveState.TELEOP_MODE) {
             if (requestManual) {
-                nextSystemState = SwerveState.Manual_MODE;
+                systemState = SwerveState.Manual_MODE;
             }
         }
 
         if (nextSystemState != systemState) {
             lastTransitioned = RobotController.getFPGATime()/1.0E6;
-            systemState = nextSystemState;
         }
     }   
 }

@@ -1,49 +1,48 @@
 package frc.robot.autonomus.routines;
 
 import frc.robot.subsystems.swerve.Swerve;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 
-public class threeBallAuto extends BaseRoutineCode{
 
-  public threeBallAuto(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
+public class twoBallAutoRight extends BaseRoutineCode{
+
+  public twoBallAutoRight(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
     super(swerve, shooter, intake, gut);
+    swerve.reset(new Pose2d());
   }
 
   public void periodic() {
     boolean isShooting = false;
     boolean isMoving = false;
+
+    SmartDashboard.putNumber("timer", timer.get());
     /* auto start */
     // needs to be tested
-
+    
     // shoot two balls
     if (timer.get() >= 0 && timer.get() < 1.5) {
       isShooting = true;
     }
     // swerve out of the tarmac
-    if (timer.get() >= 2 && timer.get() < 4){
-      swerve.requestManual(-1.0, -0.2, 1);
-      isMoving = true;
-    }  
-    // swerve inside of tarmac
-    if (timer.get() >= 3.5 && timer.get() < 5){
-      swerve.requestManual(1.0, 0.2, -1);
-      isMoving = true;
-    }  
-    // shoot two balls
-    if (timer.get() >= 5 && timer.get() < 6.5) {
-      isShooting = true;
+    if (timer.get() >= 2 && timer.get() < 8){
+        SmartDashboard.putNumber("moving?", timer.get());
+        swerve.requestManual(-0.6, 0, 0);
+        isMoving = true;
     }
-
+    
     /* auto end */
 
     // handles shooting
     if (isShooting == true) {
-      shooter.requestShoot(1);
+      shooter.requestShoot(4300);
       gut.requestShoot();
     } else {
       shooter.requestIdle();
+      gut.stopRequestShoot();
     }
     if (!isMoving) {
         swerve.requestManual(0, 0, 0);

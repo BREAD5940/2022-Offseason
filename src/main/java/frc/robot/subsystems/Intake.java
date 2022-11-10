@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.RobotController;
@@ -53,6 +54,7 @@ public class Intake {
     verticalRollerMotor.restoreFactoryDefaults();
     horizontalRollerMotor.restoreFactoryDefaults();
     deploymentMotor.restoreFactoryDefaults();
+    deploymentMotor.setIdleMode(IdleMode.kBrake);
 
     // Initialize pid controller, deployment encoder, and limit switch
     deploymentPid = deploymentMotor.getPIDController();
@@ -104,7 +106,6 @@ public class Intake {
     } else {
       deploymentMotor.setVoltage(0);
     }*/
-
     deploymentPid.setReference(INTAKE_DEPLOYED_SETPOINT, CANSparkMax.ControlType.kPosition);
   }
 
@@ -121,8 +122,8 @@ public class Intake {
 
   // Private method to spin rollers
   private void spinRollers(boolean outtake) {
-    verticalRollerMotor.set(outtake ? -0.3 : 0.5);
-    horizontalRollerMotor.set(outtake ? -0.3 : 0.5);
+    verticalRollerMotor.set(outtake ? -0.3 : 1);
+    horizontalRollerMotor.set(outtake ? -0.3 : 1);
   }
 
   // Private method to stop rollers

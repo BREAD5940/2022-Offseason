@@ -109,16 +109,19 @@ public class Gut {
         SmartDashboard.putString("gutState", gutState.toString());
 
 //----------------------------------------------------------------- start
-        // no sensor code
+ // no sensor code
         if (gutState == GutStates.IDLE_NO_CARGO) {
             // State Outputs
             closeMotor.set(0.0);
             farMotor.set(0.0);
 
             // State Transitions
-            if (intake.isIntakeDeployed()) {
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+
+            } else if (intake.isIntakeDeployed()) {
                 gutState = GutStates.INTAKE_NO_CARGO;
-            }
+            } 
 
         }
 
@@ -136,7 +139,10 @@ public class Gut {
             shooter.requestIdle();
 
             // State Transitions
-            if (!intake.isIntakeDeployed()) {
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+
+            } else if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_NO_CARGO;
             }
         }
@@ -158,7 +164,6 @@ public class Gut {
             }
 
         }
-
 //----------------------------------------------------------------- end
     
         // Operator overides
@@ -179,16 +184,19 @@ public class Gut {
 /*
     no sensor code
 --------------------------------------------------------
-    // no sensor code
-    if (gutState == GutStates.IDLE_NO_CARGO) {
+        // no sensor code
+        if (gutState == GutStates.IDLE_NO_CARGO) {
             // State Outputs
             closeMotor.set(0.0);
             farMotor.set(0.0);
 
             // State Transitions
-            if (intake.isIntakeDeployed()) {
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+
+            } else if (intake.isIntakeDeployed()) {
                 gutState = GutStates.INTAKE_NO_CARGO;
-            }
+            } 
 
         }
 
@@ -206,7 +214,10 @@ public class Gut {
             shooter.requestIdle();
 
             // State Transitions
-            if (!intake.isIntakeDeployed()) {
+            if (requestShoot) {
+                gutState = GutStates.SHOOT_CARGO;
+
+            } else if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_NO_CARGO;
             }
         }
@@ -226,7 +237,7 @@ public class Gut {
             if (!requestShoot || !shooter.isShooting()) {
                 gutState = GutStates.IDLE_NO_CARGO;
             }
-        
+
         }
 --------------------------------------------------------
 */
