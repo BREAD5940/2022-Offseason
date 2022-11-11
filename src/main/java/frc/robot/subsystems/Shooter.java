@@ -11,12 +11,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.Shooter.*;
 
+
+import static java.util.Map.entry;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Map.Entry;
+
+
 public class Shooter {
 
     // declare motor and encoder
     private CANSparkMax shooterMotor = new CANSparkMax(SHOOTER_ID, MotorType.kBrushless);
     private RelativeEncoder encoder = shooterMotor.getEncoder();
-    private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.1913043478, 1/460.0);
+    //private SimpleMotorFeedforward ff = new SimpleMotorFeedforward(0.1913043478, 1/460.0);
 
     // declare values
     private double setpoint = 0.0;
@@ -25,11 +32,20 @@ public class Shooter {
     private double timeLastStateChange;
     private boolean isStoped = false;
     private PIDController pidShooter = new PIDController(0.002, 0, 0);
-    private int barfRPM = 2000;
+
+    public TreeMap<Double, Double> InterpolatingTable = new TreeMap<>(
+        Map.ofEntries(
+            entry(685.714111328125, 2.0),
+            entry(1514.2861328125, 4.0),
+            entry(2354.2861328125, 6.0),
+            entry(3200.0, 8.0),
+            entry(4051.42724609375, 10.0)
+        )
+    );
 
     public Shooter() {
         encoder.setVelocityConversionFactor(1); // gear ratio
-        shooterMotor.enableVoltageCompensation(12);
+        shooterMotor.enableVoltageCompensation(10.5);
     }
 
     public boolean isShooting() {
@@ -49,13 +65,22 @@ public class Shooter {
         if (rpm <= 50) {
             shooterMotor.set(0.0);
         } else {
-            double outPut = pidShooter.calculate(getVelocity(), rpm) + ff.calculate(rpm);
+            double outPut = pidShooter.calculate(getVelocity(), rpm) + getInterpolatingValue(rpm, InterpolatingTable);
             shooterMotor.setVoltage(-outPut);
         }
     }
 
+    public double getInterpolatingValue(double dataPoint, TreeMap<Double, Double> InterpolatingTable) {
+        Entry<Double, Double> ceil = InterpolatingTable.ceilingEntry(dataPoint);
+        Entry<Double, Double> floor = InterpolatingTable.floorEntry(dataPoint);
+        if (ceil == null) return floor.getValue();
+        if (floor == null) return ceil.getValue();
+        if (ceil.getValue().equals(floor.getValue())) return ceil.getValue();
+        return (ceil.getValue() - floor.getValue()) / (ceil.getKey() - floor.getKey()) * (dataPoint - floor.getKey()) + floor.getValue();
+    }
+
     public void requestIdle() {
-        setpoint = 1500;
+        setpoint = 200;
         requestShoot = false;
     }
 
