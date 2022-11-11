@@ -66,6 +66,9 @@ public class Controls {
             intake.requestDeploy(false);
         } else if (operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
+            gut.operatorRequestGut = true;
+            gut.operatorRequestGutDirection = true;
+            shooter.operatorRequestGut = true;
         } else {
             intake.requestStow();
         }
@@ -92,7 +95,7 @@ public class Controls {
 
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {            
-            shooter.requestShoot(4300); // shoot rpm
+            shooter.requestShoot(3970); // shoot rpm
             gut.requestShoot();
         } else {
             shooter.requestIdle();

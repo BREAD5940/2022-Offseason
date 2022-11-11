@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +30,7 @@ public class Shooter {
     private double setpoint = 0.0;
     private ShooterState systemState = ShooterState.IDLE;
     private boolean requestShoot = false;
+    public boolean operatorRequestGut = false;
     private double timeLastStateChange;
     private boolean isStoped = false;
     private PIDController pidShooter = new PIDController(0.002, 0, 0);
@@ -41,12 +43,13 @@ public class Shooter {
             entry(3318.5726806640623, 8.0),
             entry(3763.999267578125, 9.0),
             entry(4221.429028320313, 10.0),
-            entry(4418.00009765625, 10.5)
+            entry(4438.00009765625, 10.5)
         )
     );
 
     public Shooter() {
         shooterMotor.enableVoltageCompensation(10.5);
+        shooterMotor.setIdleMode(IdleMode.kCoast);
     }
 
     public boolean isShooting() {
@@ -66,7 +69,7 @@ public class Shooter {
         if (rpm <= 50) {
             shooterMotor.set(0.0);
         } else {
-            double outPut = pidShooter.calculate(getVelocity(), rpm) + getInterpolatingValue(rpm, InterpolatingTable);
+            double outPut = pidShooter.calculate(getVelocity(), rpm + 150) + getInterpolatingValue(rpm + 150, InterpolatingTable);
             shooterMotor.setVoltage(-outPut);
         }
     }
@@ -82,7 +85,7 @@ public class Shooter {
     //entry(4221.429028320313, 10.0)
     //entry(4438.00009765625, 10.5)
     public void requestIdle() {
-        setpoint = 200;
+        setpoint = 1500;
         requestShoot = false;
     }
 
@@ -161,6 +164,12 @@ public class Shooter {
                 systemState = ShooterState.IDLE;
             }
         }
+
+        if (operatorRequestGut) {
+            shooterMotor.set(0.3);
+            operatorRequestGut = false;
+        }
+
         if (lastSystemState != systemState) {
             timeLastStateChange = getTime();
         }

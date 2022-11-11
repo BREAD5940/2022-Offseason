@@ -151,10 +151,10 @@ public class Intake {
     }
 
     IntakeState nextSystemState = systemState;
+    SmartDashboard.putString("Intake State", systemState.toString());
 
 
     if (systemState == IntakeState.HOMING) {
-      SmartDashboard.putString("Intake State", "HOMING");
 
       // Outputs
       deploymentMotor.setVoltage(-3);
@@ -171,7 +171,6 @@ public class Intake {
       }
 
     } else if (systemState == IntakeState.STOWED_INACTIVE) {
-      SmartDashboard.putString("Intake State", "STOWED_INACTIVE");
       // Outputs
       stow();
       stopRollers();
@@ -189,7 +188,6 @@ public class Intake {
       }
 
     } else if (systemState == IntakeState.DEPLOYED_ACTIVE_IN) {
-      SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_IN");
 
 
       // Outputs
@@ -209,7 +207,6 @@ public class Intake {
       }
 
     } else if (systemState == IntakeState.DEPLOYED_ACTIVE_OUT) {
-      SmartDashboard.putString("Intake State", "DEPLOYED_ACTIVE_OUT");
 
 
       // Outputs

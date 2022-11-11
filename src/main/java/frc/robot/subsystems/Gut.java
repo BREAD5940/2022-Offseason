@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -130,7 +131,8 @@ public class Gut {
         else if (gutState == GutStates.INTAKE_NO_CARGO) {
 
             // State Outputs
-            farMotor.set(-0.1);
+            //farMotor.set(-0.1);
+            farMotor.setIdleMode(IdleMode.kBrake);
             closeMotor.set(0.1);
 
             //intake.requestDeploy(false);
@@ -141,9 +143,10 @@ public class Gut {
             // State Transitions
             if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
-
+                farMotor.setIdleMode(IdleMode.kCoast);
             } else if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_NO_CARGO;
+                farMotor.setIdleMode(IdleMode.kCoast);
             }
         }
 
@@ -177,6 +180,7 @@ public class Gut {
                 closeMotor.set(gutSpeed);
             }
         }
+        operatorRequestGut = false;
     }
 }
 
