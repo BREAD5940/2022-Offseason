@@ -35,16 +35,17 @@ public class Shooter {
 
     public TreeMap<Double, Double> InterpolatingTable = new TreeMap<>(
         Map.ofEntries(
-            entry(685.714111328125, 2.0),
-            entry(1514.2861328125, 4.0),
-            entry(2354.2861328125, 6.0),
-            entry(3200.0, 8.0),
-            entry(4051.42724609375, 10.0)
+            entry(494.85716285705564, 2.0),
+            entry(1138.285791015625, 3.0),
+            entry(1574.5713195800781, 4.0),
+            entry(3318.5726806640623, 8.0),
+            entry(3763.999267578125, 9.0),
+            entry(4221.429028320313, 10.0),
+            entry(4418.00009765625, 10.5)
         )
     );
 
     public Shooter() {
-        encoder.setVelocityConversionFactor(1); // gear ratio
         shooterMotor.enableVoltageCompensation(10.5);
     }
 
@@ -78,7 +79,8 @@ public class Shooter {
         if (ceil.getValue().equals(floor.getValue())) return ceil.getValue();
         return (ceil.getValue() - floor.getValue()) / (ceil.getKey() - floor.getKey()) * (dataPoint - floor.getKey()) + floor.getValue();
     }
-
+    //entry(4221.429028320313, 10.0)
+    //entry(4438.00009765625, 10.5)
     public void requestIdle() {
         setpoint = 200;
         requestShoot = false;
