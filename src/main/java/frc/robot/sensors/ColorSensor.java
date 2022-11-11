@@ -62,7 +62,7 @@ public class ColorSensor {
           SmartDashboard.putString("Gut Ball Close", "not present");
         }
         if (far_r / far_b > colorRatio) {
-            farColor = Alliance.Invalid;
+            farColor = Alliance.Red;
             far_ball_present = true;
             SmartDashboard.putString("Gut Ball Far", "red");
         } else if (far_b / far_r > colorRatio) {
