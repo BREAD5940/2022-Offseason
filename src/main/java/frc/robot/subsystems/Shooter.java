@@ -50,6 +50,8 @@ public class Shooter {
     public Shooter() {
         shooterMotor.enableVoltageCompensation(10.5);
         shooterMotor.setIdleMode(IdleMode.kCoast);
+        shooterMotor.setSmartCurrentLimit(40);
+        shooterMotor.setSecondaryCurrentLimit(80);
     }
 
     public boolean isShooting() {
@@ -69,7 +71,7 @@ public class Shooter {
         if (rpm <= 50) {
             shooterMotor.set(0.0);
         } else {
-            double outPut = pidShooter.calculate(getVelocity(), rpm + 150) + getInterpolatingValue(rpm + 150, InterpolatingTable);
+            double outPut = pidShooter.calculate(getVelocity(), rpm + 50) + getInterpolatingValue(rpm + 50, InterpolatingTable);
             shooterMotor.setVoltage(-outPut);
         }
     }

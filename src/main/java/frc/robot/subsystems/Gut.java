@@ -75,6 +75,10 @@ public class Gut {
         // Restore motor controller factory defaults
         closeMotor.restoreFactoryDefaults();
         farMotor.restoreFactoryDefaults();
+        farMotor.setSmartCurrentLimit(40);
+        farMotor.setSecondaryCurrentLimit(80);
+        closeMotor.setSmartCurrentLimit(40);
+        closeMotor.setSecondaryCurrentLimit(80);
     }
 
     // Public method to request shoot

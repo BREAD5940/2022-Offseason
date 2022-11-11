@@ -95,7 +95,7 @@ public class Controls {
 
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {            
-            shooter.requestShoot(3970); // shoot rpm
+            shooter.requestShoot(3500); // shoot rpm
             gut.requestShoot();
         } else {
             shooter.requestIdle();
@@ -126,9 +126,9 @@ public class Controls {
 
         // gut overides
         if (operator.getRightBumper()) {
-            gut.operatorSpinGut(true);
-        } else if (operator.getLeftBumper()) {
             gut.operatorSpinGut(false);
+        } else if (operator.getLeftBumper()) {
+            gut.operatorSpinGut(true);
         }
 
         // old code
