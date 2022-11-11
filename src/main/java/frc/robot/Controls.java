@@ -62,13 +62,13 @@ public class Controls {
     public void periodic() {
 
         // Intake Controls
-        if (operator.getRightTriggerAxis() >= 0.1) {
-            intake.requestDeploy(false);
-        } else if (operator.getLeftTriggerAxis() >= 0.1) {
+        if (operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
             gut.operatorRequestGut = true;
             gut.operatorRequestGutDirection = true;
             shooter.operatorRequestGut = true;
+        } else if (driver.getRightTriggerAxis() >= 0.1) {
+            intake.requestDeploy(false);
         } else {
             intake.requestStow();
         }
