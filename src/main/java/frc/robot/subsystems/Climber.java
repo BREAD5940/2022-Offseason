@@ -50,11 +50,11 @@ public class Climber {
 
 
     public void jogUp() {
-        climberMotor.set(-0.3);
+        climberMotor.set(0.6);
     }
 
     public void jogDown() {
-        climberMotor.set(0.3);
+        climberMotor.set(-0.8);
     }
 
     public void dontJog() {

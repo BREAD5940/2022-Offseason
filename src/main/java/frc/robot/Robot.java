@@ -11,15 +11,18 @@ public class Robot extends TimedRobot {
 
   private Controls controls;
   private BaseRoutineCode auto;
+  public static double shooterSpeedCal = 4100.0;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     controls = new Controls(m_robotContainer.swerve, m_robotContainer.shooter, m_robotContainer.intake, m_robotContainer.gut, m_robotContainer.climber);
+    SmartDashboard.putNumber("ShooterSpeedCal", shooterSpeedCal);
   }
 
   @Override
   public void robotPeriodic() {
+    shooterSpeedCal = SmartDashboard.getNumber("ShooterSpeedCal", shooterSpeedCal);
   }
 
   @Override

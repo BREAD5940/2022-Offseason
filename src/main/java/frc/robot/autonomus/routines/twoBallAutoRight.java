@@ -3,6 +3,7 @@ package frc.robot.autonomus.routines;
 import frc.robot.subsystems.swerve.Swerve;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.subsystems.Gut;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -38,7 +39,7 @@ public class twoBallAutoRight extends BaseRoutineCode{
 
     // handles shooting
     if (isShooting == true) {
-      shooter.requestShoot(4300);
+      shooter.requestShoot(Robot.shooterSpeedCal);
       gut.requestShoot();
     } else {
       shooter.requestIdle();

@@ -95,7 +95,7 @@ public class Controls {
 
         // check to see which button the left paddle triggers
         if (operator.getAButton()) {            
-            shooter.requestShoot(3500); // shoot rpm
+            shooter.requestShoot(Robot.shooterSpeedCal);            
             gut.requestShoot();
         } else {
             shooter.requestIdle();
