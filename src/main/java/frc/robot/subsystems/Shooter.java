@@ -68,7 +68,8 @@ public class Shooter {
 
     public void setFlywheelRPM(double rpm) {
         SmartDashboard.putNumber("setFlywheelRPM", rpm);
-        if (rpm <= 50) {
+        if (rpm <= 50
+        ) {
             shooterMotor.set(0.0);
         } else {
             double outPut = pidShooter.calculate(getVelocity(), rpm + 50) + getInterpolatingValue(rpm + 50, InterpolatingTable);
@@ -92,6 +93,7 @@ public class Shooter {
     }
 
     public void requestShoot(double rpm) {
+
         setpoint = rpm;
         requestShoot = true;
     }
@@ -111,6 +113,7 @@ public class Shooter {
 
     public void stop() {
         isStoped = true;
+        requestShoot = false;
     }
 
     public void periodic() {
