@@ -45,6 +45,7 @@ public class AprilTagCode {
             PhotonTrackedTarget target = result.getBestTarget();
             Transform3d targetToCamera = target.getCameraToTarget().inverse();
             if (target.getFiducialId() != -1) {
+<<<<<<< Updated upstream
                 if (targetIDs.hasKey(target.getFiducialId())) {
                     var tagGlobalPose = targetIDs.getTagTransform(target.getFiducialId());
 
@@ -75,6 +76,38 @@ public class AprilTagCode {
             robotGlobalPose = null;
         }
     }
+=======
+                var tagGlobalPose = aprilTagPoseList.getTagTransform(target.getFiducialId());
+
+
+                // var tagGlobalPose = new Pose3d(
+                //         new Translation3d(
+                //         Units.inchesToMeters(31), 0, Units.inchesToMeters(54.5)),
+                //         new Rotation3d(Units.degreesToRadians(90), Units.degreesToRadians(0), Units.degreesToRadians(180)));
+
+                var cameraGlobalPose = tagGlobalPose.transformBy(targetToCamera);
+                //var cameraGlobalPose = this.fixedTransformBy(tagGlobalPose, targetToCamera);
+                robotGlobalPose = this.fixedTransformBy(cameraGlobalPose, cameraToRobotCenter); 
+
+
+                System.out.printf("robotGlobalPose: [%.02f, %.02f, %.02f] [%.02f, %.02f, %.02f]\n",
+                        robotGlobalPose.getTranslation().getX(),
+                        robotGlobalPose.getTranslation().getY(),
+                        robotGlobalPose.getTranslation().getZ(),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getX()),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getY()),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getZ()));
+            } else {
+                setNull();
+            }
+        } else {
+            setNull();
+        }
+    }
+    private void setNull() {
+        robotGlobalPose = null;
+    }
+>>>>>>> Stashed changes
 
     public Pose3d getPos() {
         return robotGlobalPose;
