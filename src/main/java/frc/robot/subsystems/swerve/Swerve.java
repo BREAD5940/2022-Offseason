@@ -65,7 +65,7 @@ public class Swerve {
     }
 
     public void setSpeeds(double xSpeed, double ySpeed, double rot) {
-        SmartDashboard.putNumber("yay?", xSpeed);
+        //SmartDashboard.putNumber("yay?", xSpeed);
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
             xSpeed, ySpeed, rot, pose.getRotation())
         );

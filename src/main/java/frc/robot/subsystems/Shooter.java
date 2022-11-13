@@ -120,7 +120,7 @@ public class Shooter {
     public void periodic() {
         SmartDashboard.putNumber("shooter rpm", getVelocity());
         SmartDashboard.putBoolean("shooter can hoot", canShoot());
-        SmartDashboard.putBoolean("thumbs up apm", atSetPoint());
+        SmartDashboard.putBoolean("shooter at set", atSetPoint());
 
         // if (!isStoped) {
         ShooterState lastSystemState = systemState;

@@ -29,7 +29,7 @@ public class twoBallAutoLeft extends BaseRoutineCode{
     }
     // swerve out of the tarmac
     if (timer.get() >= 2.5 && timer.get() < 8){
-        SmartDashboard.putNumber("moving?", timer.get());
+        //SmartDashboard.putNumber("moving?", timer.get());
         swerve.requestManual(-0.6, 0, 0);
         isMoving = true;
     }
