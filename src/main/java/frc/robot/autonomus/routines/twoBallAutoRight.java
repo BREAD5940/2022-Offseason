@@ -14,6 +14,7 @@ public class twoBallAutoRight extends BaseRoutineCode{
   public twoBallAutoRight(Swerve swerve, Shooter shooter, Intake intake, Gut gut) {
     super(swerve, shooter, intake, gut);
     swerve.reset(new Pose2d());
+
   }
 
   public void periodic() {
@@ -25,11 +26,14 @@ public class twoBallAutoRight extends BaseRoutineCode{
     // needs to be tested
     
     // shoot two balls
-    if (timer.get() >= 0 && timer.get() < 1.5) {
+    if (timer.get() >= 0 && timer.get() < SmartDashboard.getNumber("DriveDelay", 7)) {
       isShooting = true;
     }
+    if (timer.get() >= 3 && timer.get() < SmartDashboard.getNumber("DriveDelay", 7)) {
+      gut.operatorSpinGut(false);
+    }
     // swerve out of the tarmac
-    if (timer.get() >= 2 && timer.get() < 8){
+    if (timer.get() >= SmartDashboard.getNumber("DriveDelay", 7) && timer.get() < SmartDashboard.getNumber("DriveTime", 14)){
         SmartDashboard.putNumber("moving?", timer.get());
         swerve.requestManual(-0.6, 0, 0);
         isMoving = true;

@@ -9,6 +9,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 
 import static frc.robot.Constants.Shooter.*;
 
@@ -87,7 +88,7 @@ public class Shooter {
     //entry(4221.429028320313, 10.0)
     //entry(4438.00009765625, 10.5)
     public void requestIdle() {
-        setpoint = 1500;
+        setpoint = Robot.idleSetpoint;
         requestShoot = false;
     }
 
@@ -113,6 +114,7 @@ public class Shooter {
     public void stop() {
         isStoped = true;
         requestShoot = false;
+        setpoint = 0.0;
     }
 
     public void periodic() {

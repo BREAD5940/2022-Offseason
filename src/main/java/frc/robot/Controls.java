@@ -62,12 +62,12 @@ public class Controls {
     public void periodic() {
 
         // Intake Controls
-        if (operator.getLeftTriggerAxis() >= 0.1) {
+        if (driver.getLeftTriggerAxis() >= 0.1 || operator.getLeftTriggerAxis() >= 0.1) {
             intake.requestDeploy(true);
             gut.operatorRequestGut = true;
             gut.operatorRequestGutDirection = true;
             shooter.operatorRequestGut = true;
-        } else if (driver.getRightTriggerAxis() >= 0.1) {
+        } else if (driver.getRightTriggerAxis() >= 0.1 || operator.getRightTriggerAxis() >= 0.1) {
             intake.requestDeploy(false);
         } else {
             intake.requestStow();
@@ -92,23 +92,20 @@ public class Controls {
         swerve.setSpeeds(dx, dy, rot);
 
         // Shooter Controls
+        if (operator.getXButtonPressed()) {
+            if (Robot.idleSetpoint == 1500.0) {
+                Robot.idleSetpoint  = 0.0;
+            } else {
+                Robot.idleSetpoint = 1500.0;
+            }
+        }
 
-        // check to see which button the left paddle triggers
         if (operator.getAButton()) {            
             shooter.requestShoot(Robot.shooterSpeedCal);            
-            
             gut.requestShoot();
         } else {
             shooter.requestIdle();
             gut.stopRequestShoot();
-        }
-
-        // stop shooter
-
-        if (operator.getXButton()) {
-            shooter.stop();
-        } else if (operator.getYButton()) {
-            shooter.start();
         }
 
         // Climber Controls

@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.sensors.ColorSensor;
@@ -59,6 +60,8 @@ public class Gut {
     private double gutShootSpeed = 0.5;
     public boolean operatorRequestGut = false;
     public boolean operatorRequestGutDirection = false;
+
+    Timer shootingTimer = new Timer();
 
     // Configure Gut on instantiation
     public Gut(Shooter shooter, Intake intake) {
@@ -148,6 +151,8 @@ public class Gut {
             if (requestShoot) {
                 gutState = GutStates.SHOOT_CARGO;
                 farMotor.setIdleMode(IdleMode.kCoast);
+                shootingTimer.reset();
+                shootingTimer.start();
             } else if (!intake.isIntakeDeployed()) {
                 gutState = GutStates.IDLE_NO_CARGO;
                 farMotor.setIdleMode(IdleMode.kCoast);
@@ -160,7 +165,7 @@ public class Gut {
             closeMotor.set(0);
 
             // checks if the shooter is up to speed
-            if (shooter.canShoot()) {
+            if (shooter.canShoot() || shootingTimer.get() > 2.0) {
                 farMotor.set(gutShootSpeed);
                 closeMotor.set(gutShootSpeed);
             }
