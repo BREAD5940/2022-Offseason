@@ -1,5 +1,7 @@
 package frc.robot.vision;
 
+import java.lang.annotation.Target;
+
 import javax.swing.plaf.synth.SynthEditorPaneUI;
 
 import org.photonvision.PhotonCamera;
@@ -23,10 +25,10 @@ public class AprilTagCode {
     final double TARGET_HEIGHT_METERS = Units.feetToMeters(5);
     final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(0);
 
-    private Pose3d robotPos;
+    private Pose3d robotGlobalPose;
 
     private allAprilTags aprilTagPoseList;
-    
+
     // private Transform3d targetFix = new Transform3d(new Translation3d(0, 0, 0),
     // new Rotation3d(90, 0, 90))
 
@@ -44,32 +46,36 @@ public class AprilTagCode {
         if (result.hasTargets()) {
             PhotonTrackedTarget target = result.getBestTarget();
             Transform3d targetToCamera = target.getCameraToTarget().inverse();
+            if (target.getFiducialId() != -1 && aprilTagPoseList.hasKey(target.getFiducialId())) {
+                var tagGlobalPose = aprilTagPoseList.getTagTransform(target.getFiducialId());
 
-            var tagGlobalPose = aprilTagPoseList.getTagTransform(target.getFiducialId());
+                // var tagGlobalPose = new Pose3d(
+                // new Translation3d(
+                // Units.inchesToMeters(31), 0, Units.inchesToMeters(54.5)),
+                // new Rotation3d(Units.degreesToRadians(90), Units.degreesToRadians(0),
+                // Units.degreesToRadians(180)));
 
+                var cameraGlobalPose = this.fixedTransformBy(tagGlobalPose, targetToCamera);
+                // var cameraGlobalPose = this.fixedTransformBy(tagGlobalPose, targetToCamera);
+                robotGlobalPose = this.fixedTransformBy(cameraGlobalPose, cameraToRobotCenter);
 
-            // var tagGlobalPose = new Pose3d(
-            //         new Translation3d(
-            //         Units.inchesToMeters(31), 0, Units.inchesToMeters(54.5)),
-            //         new Rotation3d(Units.degreesToRadians(90), Units.degreesToRadians(0), Units.degreesToRadians(180)));
+                System.out.printf("robotGlobalPose: [%.02f, %.02f, %.02f] [%.02f, %.02f, %.02f]\n",
+                        robotGlobalPose.getTranslation().getX(),
+                        robotGlobalPose.getTranslation().getY(),
+                        robotGlobalPose.getTranslation().getZ(),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getX()),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getY()),
+                        Units.radiansToDegrees(robotGlobalPose.getRotation().getZ()));
 
-            var cameraGlobalPose = tagGlobalPose.transformBy(targetToCamera);
-            //var cameraGlobalPose = this.fixedTransformBy(tagGlobalPose, targetToCamera);
-            var robotGlobalPose = this.fixedTransformBy(cameraGlobalPose, cameraToRobotCenter); 
-
-
-            System.out.printf("robotGlobalPose: [%.02f, %.02f, %.02f] [%.02f, %.02f, %.02f]\n",
-                    robotGlobalPose.getTranslation().getX(),
-                    robotGlobalPose.getTranslation().getY(),
-                    robotGlobalPose.getTranslation().getZ(),
-                    Units.radiansToDegrees(robotGlobalPose.getRotation().getX()),
-                    Units.radiansToDegrees(robotGlobalPose.getRotation().getY()),
-                    Units.radiansToDegrees(robotGlobalPose.getRotation().getZ()));
-                    
+            } else {
+                robotGlobalPose = null;
+            }
+        } else {
+            robotGlobalPose = null;
         }
     }
-    
+
     public Pose3d getPos() {
-        return robotPos;
+        return robotGlobalPose;
     }
 }

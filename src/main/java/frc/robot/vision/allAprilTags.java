@@ -35,8 +35,11 @@ public class allAprilTags {
         poseMap.put(52, new Pose3d(new Translation3d(8.78, 3.903, 2.418), new Rotation3d(0, Units.degreesToRadians(249), Units.degreesToRadians(26.75)))); //Upper Hub Near-Red
         poseMap.put(53, new Pose3d(new Translation3d(8.441, 4.665, 2.418), new Rotation3d(0, Units.degreesToRadians(69), Units.degreesToRadians(26.75)))); //Upper Hub Red-Far
     }
-    
-    public Pose3d getTagTransform(double aprilTagID) {
+    public boolean hasKey(Integer aprilTagID) {
+        return poseMap.containsKey(aprilTagID);
+    }
+
+    public Pose3d getTagTransform(Integer aprilTagID) {
         return poseMap.get(aprilTagID);
     }
 }
