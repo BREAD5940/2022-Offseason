@@ -24,15 +24,21 @@ public class twoBallAutoLeft extends BaseRoutineCode{
     // needs to be tested
     
     // shoot two balls
-    if (timer.get() >= 0 && timer.get() < 2.5) {
+    if (timer.get() >= 0 && timer.get() <= 2.5) {
       isShooting = true;
     }
     // swerve out of the tarmac
-    if (timer.get() >= 2.5 && timer.get() < 8){
+    if (timer.get() >= 2.8 && timer.get() < 8){
+        isShooting = false;
         SmartDashboard.putNumber("moving?", timer.get());
         swerve.requestManual(-0.6, 0, 0);
         isMoving = true;
     }
+    if (timer.get() >= 8){
+      swerve.requestManual(0, 0, 0);
+      isMoving = false;
+    }
+    
     
     /* auto end */
 
