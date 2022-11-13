@@ -76,7 +76,6 @@ public class AprilTagCode {
             robotGlobalPose = null;
         }
     }
-=======
                 var tagGlobalPose = aprilTagPoseList.getTagTransform(target.getFiducialId());
 
 
