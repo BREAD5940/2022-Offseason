@@ -30,8 +30,10 @@ public class MK2SwerveModule {
         driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
         driveMotor.restoreFactoryDefaults();
         driveMotor.setIdleMode(IdleMode.kCoast);
+        driveMotor.setSmartCurrentLimit(40);
         turnMotor = new CANSparkMax(steerMotorID, MotorType.kBrushless);
         turnMotor.restoreFactoryDefaults();
+        turnMotor.setSmartCurrentLimit(25);
         driveEncoder = driveMotor.getEncoder();
         turnEncoder = new AnalogEncoder(encoderID, encoderOffset);
         turnPID.enableContinuousInput(-Math.PI, Math.PI);
