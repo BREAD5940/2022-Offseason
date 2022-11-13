@@ -1,78 +1,87 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.autonomus.routines.BaseRoutineCode;
+import frc.robot.subsystems.swerve.Swerve;
 
-/**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class Robot extends TimedRobot {
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+  private RobotContainer m_robotContainer;
 
-  public static XboxController controller = new XboxController(0);
-
-  Intake intake = new Intake();
+  private Controls controls;
+  private BaseRoutineCode auto;
+  public static double shooterSpeedCal = 4100.0;
+  public static double idleSetpoint = 1500.0;
 
   @Override
   public void robotInit() {
-    intake.requestHome();
+    m_robotContainer = new RobotContainer();
+    controls = new Controls(m_robotContainer.swerve, m_robotContainer.shooter, m_robotContainer.intake, m_robotContainer.gut, m_robotContainer.climber);
+    SmartDashboard.putNumber("ShooterSpeedCal", shooterSpeedCal);
+    SmartDashboard.putNumber("DriveDelay", 7);
+    SmartDashboard.putNumber("DriveTime", 18 );
   }
 
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    shooterSpeedCal = SmartDashboard.getNumber("ShooterSpeedCal", shooterSpeedCal);
+    //SmartDashboard.putNumber("FL Swerve Angle", m_robotContainer.swerve.fl.getModuleAngle());
+    //SmartDashboard.putNumber("FR Swerve Angle", m_robotContainer.swerve.fr.getModuleAngle());
+    //SmartDashboard.putNumber("BR Swerve Angle", m_robotContainer.swerve.br.getModuleAngle());
+    //SmartDashboard.putNumber("BL Swerve Angle", m_robotContainer.swerve.bl.getModuleAngle());
+  }
 
   @Override
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    auto = m_robotContainer.getAutonomous();
+    auto.start();
+    // reset systems
+    m_robotContainer.intake.requestHome();
+    m_robotContainer.swerve.reset(new Pose2d());
+    //m_robotContainer.climber.requestHoming();
+  }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_robotContainer.periodic();
+    auto.periodic();
+  }
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    m_robotContainer.swerve.requestTeleop();
+  }
 
   @Override
   public void teleopPeriodic() {
-    periodicTeleopControls();
-    intake.periodic();
+    m_robotContainer.periodic();
+    controls.periodic();
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
   @Override
-  public void testInit() {}
+  public void testInit() {
+  }
 
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+  }
 
   @Override
-  public void simulationPeriodic() {}
-
-  public void periodicTeleopControls() {
-    // Intake Controls
-    if (controller.getRightTriggerAxis() >= 0.1) {
-      intake.requestDeploy(false);
-    } else if (controller.getLeftTriggerAxis() >= 0.1) {
-      intake.requestDeploy(true);
-    } else {
-      intake.requestStow();
-    }
+  public void simulationPeriodic() {
   }
 }
