@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -14,6 +14,7 @@ import frc.robot.sensors.ColorSensor;
 import static frc.robot.Constants.Gut.*;
 
 public class Gut {
+
 
     // State
     public enum GutStates {
@@ -50,7 +51,6 @@ public class Gut {
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
     // Other variables
     private Alliance allianceColor;
     public double stateStartTime = 0.00;
@@ -68,6 +68,7 @@ public class Gut {
         this.shooter = shooter;
         this.intake = intake;
 
+
         // Initial state
         gutState = GutStates.IDLE_NO_CARGO;
 
@@ -82,6 +83,7 @@ public class Gut {
         farMotor.setSecondaryCurrentLimit(80);
         closeMotor.setSmartCurrentLimit(40);
         closeMotor.setSecondaryCurrentLimit(80);
+
     }
 
     // Public method to request shoot
@@ -93,10 +95,6 @@ public class Gut {
         requestShoot = false;
     }
 
-    // Public method to request a state reset
-    public void requestReset(boolean reset) {
-        gutState = GutStates.IDLE_NO_CARGO;
-    }
 
     // get time S
     private double getTime() {
@@ -299,6 +297,7 @@ public class Gut {
 
             // State Transitions
             if (intake.isIntakeDeployed() && !requestShoot) {
+
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
 
@@ -317,6 +316,7 @@ public class Gut {
                         
             // State Transitions
             if (intake.isIntakeDeployed() && !requestShoot) {
+
                 gutState = GutStates.INTAKE_TWO_CARGO;
             }
 
@@ -346,6 +346,7 @@ public class Gut {
             }
 
             if (beamBreakFar == true) {
+
                 gutState = GutStates.INTAKE_ONE_CARGO;
             }
 
@@ -614,6 +615,7 @@ public class Gut {
             // wait for 0.7 seconds before state state can change
             if (getTime() - stateStartTime > 0.7) {
                 if (intake.isIntakeDeployed()) {
+
                     gutState = GutStates.INTAKE_ONE_CARGO;
                 } else {
                     gutState = GutStates.IDLE_ONE_CARGO;
@@ -622,3 +624,4 @@ public class Gut {
         }
 --------------------------------------------------------
 */
+

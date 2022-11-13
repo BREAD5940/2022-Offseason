@@ -14,7 +14,7 @@ import static frc.robot.Constants.Intake.*;
 // Intake Subsystem
 public class Intake {
   // State
-  private enum IntakeState {
+  private enum IntakeStates {
     HOMING, // Homing state
     STOWED_INACTIVE, // Intake is stowed and inactive
     DEPLOYED_ACTIVE_IN, // Intake is deployed and actively intaking cargo
@@ -45,6 +45,7 @@ public class Intake {
     // Initial state
     systemState = IntakeState.HOMING;
 
+
     // Initializing motor controllers
     verticalRollerMotor = new CANSparkMax(INTAKE_VERTICAL_ROLLER_ID, MotorType.kBrushless);
     horizontalRollerMotor = new CANSparkMax(INTAKE_HORIZONTAL_ROLLER_ID, MotorType.kBrushless);
@@ -74,7 +75,7 @@ public class Intake {
   // Public method to request intake to return to home position
   public void requestHome() {
     requestHome = true;
-  }
+
 
   // Public method to request intake to deploy and either spin inwards or outwards
   public void requestDeploy(boolean outtake) {
@@ -82,6 +83,7 @@ public class Intake {
       requestOuttake = true;
     } else {
       requestIntake = true;
+
     }
   }
 
@@ -92,6 +94,7 @@ public class Intake {
   // Public method to request intake to stow
   public void requestStow() {
     requestStow = true;
+
   }
 
   //public void testMoter() {

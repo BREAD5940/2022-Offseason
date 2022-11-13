@@ -89,4 +89,5 @@ public class ColorSensor {
     public Boolean isBallFar(){
         return far_ball_present;
     }
+
 }
